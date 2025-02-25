@@ -1,9 +1,8 @@
-#define SDL_MAIN_USE_CALLBACKS // use the callbacks instead of main()
+#define SDL_MAIN_USE_CALLBACKS  // use the callbacks instead of main()
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 #include <SDL3_image/SDL_image.h>
 #include <constants.h>
-#include <random.hpp>
 #include <utils.hpp>
 
 SDL_Window *window;
@@ -17,6 +16,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
                               WINDOW_HEIGHT * RATIO, 0, &window,
                               &renderer);
   loadTexturesToRenderer(texture, renderer);
+  loadLogo(window);
   return SDL_APP_CONTINUE;
 }
 
@@ -39,6 +39,8 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
 
 // This function runs once at shutdown.
 void SDL_AppQuit(void *appstate, SDL_AppResult result) {
+  SDL_DestroyRenderer(renderer);
+  SDL_DestroyWindow(window);
   for (auto &[_, txt] : texture) {
     SDL_DestroyTexture(txt);
   }

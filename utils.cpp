@@ -57,3 +57,9 @@ void loadTexturesToRenderer(
   texture["normal T"] = IMG_LoadTexture(renderer, NORMAL_T_PATH);
   texture["normal Z"] = IMG_LoadTexture(renderer, NORMAL_Z_PATH);
 }
+
+void loadLogo(SDL_Window *window) {
+  SDL_Surface *logo = IMG_Load(LOGO_PATH);
+  SDL_SetWindowIcon(window, logo);
+  SDL_DestroySurface(logo);
+}

@@ -1,4 +1,4 @@
-source = main.cc
+source = main.cpp
 others = utils.cpp
 output = game.exe
 
