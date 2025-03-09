@@ -1,43 +1,39 @@
 #ifndef constants_h_
 #define constants_h_
 
-#define WINDOW_TITLE "Tetris game - [Bài tập lớn Lập trình nâng cao]"
-#define SQUARE_BLOCK_SIZE 25
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 600
-#define RATIO 1.50f
+#define WINDOW_TITLE   "Tetris game - [Bài tập lớn Lập trình nâng cao]"
+#define WINDOW_WIDTH   800  // width of the main window
+#define WINDOW_HEIGHT  600  // height of the main window
+#define DISPLAY_SCALE  1.00f  
+
+#define BACKGROUND_POS_X  0  // top left X-coordinate of the main background
+#define BACKGROUND_POS_Y  0  // top left Y-coordinate of the main background
+
+#define MATRIX_WIDTH   272                                    // width of the matrix
+#define MATRIX_HEIGHT  534                                    // height of the matrix
+#define MATRIX_POS_X   ((WINDOW_WIDTH - MATRIX_WIDTH) / 2)    // top left X-coordinate of the matrix
+#define MATRIX_POS_Y   ((WINDOW_HEIGHT - MATRIX_HEIGHT) / 2)  // top left Y-coordinate of the matrix
+
+#define CELL_SIZE           25                  // size of a cell in the matrix (contains tetrominoes)
+#define CELL_POS_X_INIT     (MATRIX_POS_X + 6)  // initial top left X-coordinate of the top left cell
+#define CELL_POS_Y_INIT     (MATRIX_POS_Y + 7)  // initial top left Y-coordinate of the top left cell
+#define CELL_POS_INCREMENT  (CELL_SIZE + 1)     // distance between top left points of two consecutive cells
 
 // path to images
-#define BACKGROUND_PATH "./src/images/main-background.png"
-#define LOGO_PATH "./src/images/main-logo.png"
-#define MATRIX_PATH "src/images/matrix.png"
-#define DYING_I_PATH "src/images/dying/I.png"
-#define DYING_J_PATH "src/images/dying/J.png"
-#define DYING_L_PATH "src/images/dying/L.png"
-#define DYING_O_PATH "src/images/dying/O.png"
-#define DYING_S_PATH "src/images/dying/S.png"
-#define DYING_T_PATH "src/images/dying/T.png"
-#define DYING_Z_PATH "src/images/dying/Z.png"
-#define GHOST_I_PATH "src/images/ghost/I.png"
-#define GHOST_J_PATH "src/images/ghost/J.png"
-#define GHOST_L_PATH "src/images/ghost/L.png"
-#define GHOST_O_PATH "src/images/ghost/O.png"
-#define GHOST_S_PATH "src/images/ghost/S.png"
-#define GHOST_T_PATH "src/images/ghost/T.png"
-#define GHOST_Z_PATH "src/images/ghost/Z.png"
-#define LOCKED_I_PATH "src/images/locked/I.png"
-#define LOCKED_J_PATH "src/images/locked/J.png"
-#define LOCKED_L_PATH "src/images/locked/L.png"
-#define LOCKED_O_PATH "src/images/locked/O.png"
-#define LOCKED_S_PATH "src/images/locked/S.png"
-#define LOCKED_T_PATH "src/images/locked/T.png"
-#define LOCKED_Z_PATH "src/images/locked/Z.png"
-#define NORMAL_I_PATH "src/images/normal/I.png"
-#define NORMAL_J_PATH "src/images/normal/J.png"
-#define NORMAL_L_PATH "src/images/normal/L.png"
-#define NORMAL_O_PATH "src/images/normal/O.png"
-#define NORMAL_S_PATH "src/images/normal/S.png"
-#define NORMAL_T_PATH "src/images/normal/T.png"
-#define NORMAL_Z_PATH "src/images/normal/Z.png"
+#define IMAGES_PATH  "./src/images/"
+#define BACKGROUND_PNG  IMAGES_PATH "main-background.png"
+#define LOGO_PNG        IMAGES_PATH "main_logo.png"
+#define MATRIX_PNG      IMAGES_PATH "matrix.png"
+#define DYING_PATH   IMAGES_PATH "dying/"
+#define GHOST_PATH   IMAGES_PATH "ghost/"
+#define LOCKED_PATH  IMAGES_PATH "locked/"
+#define NORMAL_PATH  IMAGES_PATH "normal/"
+#define I_PNG  "I.png"
+#define J_PNG  "J.png"
+#define L_PNG  "L.png"
+#define O_PNG  "O.png"
+#define S_PNG  "S.png"
+#define T_PNG  "T.png"
+#define Z_PNG  "Z.png"
 
 #endif  // constants_h_
