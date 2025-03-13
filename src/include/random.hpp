@@ -6,7 +6,7 @@
 #include <random>
 
 // rng = random number generator
-static std::mt19937
+static thread_local std::mt19937
     rng(std::chrono::steady_clock::now().time_since_epoch().count());
 
 // gives a random integer in range [lo, hi]

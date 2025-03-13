@@ -4,7 +4,7 @@
 #define WINDOW_TITLE   "Tetris game - [Bài tập lớn Lập trình nâng cao]"
 #define WINDOW_WIDTH   800  // width of the main window
 #define WINDOW_HEIGHT  600  // height of the main window
-#define DISPLAY_SCALE  1.00f  
+#define DISPLAY_SCALE  1.50f  
 
 #define BACKGROUND_POS_X  0  // top left X-coordinate of the main background
 #define BACKGROUND_POS_Y  0  // top left Y-coordinate of the main background
@@ -22,12 +22,13 @@
 // path to images
 #define IMAGES_PATH  "./src/images/"
 #define BACKGROUND_PNG  IMAGES_PATH "main-background.png"
-#define LOGO_PNG        IMAGES_PATH "main_logo.png"
+#define LOGO_PNG        IMAGES_PATH "main-logo.png"
 #define MATRIX_PNG      IMAGES_PATH "matrix.png"
 #define DYING_PATH   IMAGES_PATH "dying/"
 #define GHOST_PATH   IMAGES_PATH "ghost/"
 #define LOCKED_PATH  IMAGES_PATH "locked/"
 #define NORMAL_PATH  IMAGES_PATH "normal/"
+#define WHOLE_PATH   IMAGES_PATH "whole/"
 #define I_PNG  "I.png"
 #define J_PNG  "J.png"
 #define L_PNG  "L.png"

@@ -2,6 +2,8 @@ source = *.cpp
 output = game.exe
 
 all:
+# clear screen
+	cls
 # compile
 	g++ $(source) -o $(output) -std=c++20 -Isrc/include -Lsrc/lib \
 	-lSDL3 -lSDL3_image -DLOCAL -ggdb3 -Wall -Wextra -Wunused-variable \

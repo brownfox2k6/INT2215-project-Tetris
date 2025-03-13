@@ -1,10 +1,9 @@
 #ifndef board_hpp_
 #define board_hpp_
 
+#include "SDL3/SDL_scancode.h"
 #include "SDL3/SDL_stdinc.h"
 #include <SDL3/SDL.h>
-#include <cstdint>
-#include <cstring>
 #include <deque>
 #include <tetromino.hpp>
 #include <unordered_map>
@@ -16,15 +15,15 @@ private:
 public:
   // just last 20 rows are used to display, first 3 rows are hidden
   static const int VISIBLE_ROWS = 20;
-  static const int HIDDEN_ROWS = 3;
+  static const int HIDDEN_ROWS = 4;
   static const int ROWS = HIDDEN_ROWS + VISIBLE_ROWS;
   static const int COLS = 10;
-  static const int HOLDS = 3;
   TextureType matrix[ROWS][COLS];
-  std::deque<Tetromino> next;
+  std::deque<TextureType> queue;
   Tetromino current, ghost, hold;
-  Uint64 timeCur, timePrev;
+  Uint64 timeCur, timePrevGoDown, timePrevKey;
   bool isPlaying;
+  Uint64 interval;
 
   Board();
 
@@ -32,14 +31,20 @@ public:
   void reset();
 
   // go to next state of the game
-  void nextState();
+  void nextState(SDL_Scancode &key, bool &isFirstPress);
 
-  // a previous tetromino has ended its journey,
-  // time to get a new tetromino to `current` from `next`
+  // get a new tetromino to `current` from `queue`
   void nextTetromino();
 
-  // create a new tetromino and push to `next`
-  void pushNewTetromino();
+  // lock current tetromino (to move on the next one)
+  void lockCurrent();
+
+  // create a new tetromino set and push to queue
+  void pushNewTetrominoSet();
+
+  // get next tetromino from queue and erase it
+  // push a new tetromino set if needed
+  TextureType getFromQueue();
 
   // Checks if a position is within bounds
   bool isWithinBounds(int row, int col) const;
@@ -72,24 +77,23 @@ public:
   // return true if it can go down, false otherwise
   bool goDown();
 
-  // make the current tetromino one step left
-  // return true if it can go left, false otherwise
-  bool goLeft();
+  // make the current tetromino to move
+  //   one step to the right if key == SDL_SCANCODE_RIGHT
+  //   one step to the left if key == SDL_SCANCODE_LEFT
+  // return true if it can go, false otherwise
+  bool goHorizontal(const SDL_Scancode &key);
 
-  // make the current tetromino one step right
-  // return true if it can go right, false otherwise
-  bool goRight();
-
-  // make the current tetromino to rotate 90 degrees to the left
+  // make the current tetromino to rotate
+  //   90 degrees to the right if d = 1
+  //   90 degrees to the leftt if d = -1
   // return true if it can rotate, false otherwise
-  bool rotateLeft();
+  bool rotate(int d);
 
-  // make the current tetromino to rotate 90 degrees to the right
-  // return true if it can rotate, false otherwise
-  bool rotateRight();
+  // hard drop current tetromino and go to next one
+  void hardDrop();
 
-  // calculate where the ghost piece is
-  void getGhost();
+  // update position of current tetromino and its ghost 
+  void updatePos();
 };
 
 #endif // board_hpp_

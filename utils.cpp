@@ -52,6 +52,13 @@ void loadTexturesToRenderer(
   textures[NORMAL | S] = IMG_LoadTexture(renderer, NORMAL_PATH S_PNG);
   textures[NORMAL | T] = IMG_LoadTexture(renderer, NORMAL_PATH T_PNG);
   textures[NORMAL | Z] = IMG_LoadTexture(renderer, NORMAL_PATH Z_PNG);
+  textures[WHOLE | I] = IMG_LoadTexture(renderer, WHOLE_PATH I_PNG);
+  textures[WHOLE | J] = IMG_LoadTexture(renderer, WHOLE_PATH J_PNG);
+  textures[WHOLE | L] = IMG_LoadTexture(renderer, WHOLE_PATH L_PNG);
+  textures[WHOLE | O] = IMG_LoadTexture(renderer, WHOLE_PATH O_PNG);
+  textures[WHOLE | S] = IMG_LoadTexture(renderer, WHOLE_PATH S_PNG);
+  textures[WHOLE | T] = IMG_LoadTexture(renderer, WHOLE_PATH T_PNG);
+  textures[WHOLE | Z] = IMG_LoadTexture(renderer, WHOLE_PATH Z_PNG);
 }
 
 void loadLogo(SDL_Window *window) {

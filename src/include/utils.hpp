@@ -2,7 +2,6 @@
 #define utils_hpp_
 
 #include <SDL3/SDL.h>
-#include <SDL3_image/SDL_image.h>
 #include <unordered_map>
 
 struct Coordinate {
@@ -27,9 +26,9 @@ enum TextureType {
   GHOST = 1 << 10,
   LOCKED = 1 << 11,
   NORMAL = 1 << 12,
-  FREE = 1 << 13,
+  WHOLE = 1 << 13,
+  FREE = 1 << 14,
 };
-
 
 // to combine flags using bitwise OR
 TextureType operator|(TextureType a, TextureType b);
