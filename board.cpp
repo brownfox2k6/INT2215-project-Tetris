@@ -1,18 +1,7 @@
-#include "SDL3/SDL_audio.h"
-#include "SDL3/SDL_render.h"
-#include "SDL3/SDL_scancode.h"
-#include "SDL3/SDL_timer.h"
-#include <algorithm>
 #include <board.hpp>
-#include <cassert>
 #include <constants.h>
-#include <ctime>
-#include <exception>
-#include <iostream>
 #include <random.hpp>
-#include <random>
 #include <tetromino.hpp>
-#include <utility>
 #include <utils.hpp>
 
 Board::Board() { reset(); }
@@ -21,12 +10,13 @@ void Board::reset() {
   for (int row = 0; row < ROWS; ++row) {
     clearRow(row);
   }
-  hold.erase();
+  hold = FREE;
   queue.clear();
   pushNewTetrominoSet();
   nextTetromino();
   timeCur = timePrevGoDown = timePrevKey = SDL_GetTicks();
-  isPlaying = true;
+  isPlaying = canHold = true;
+  timeFirstTouch = 0;
 }
 
 void Board::nextState(SDL_Scancode &key, bool &isFirstPress) {
@@ -38,11 +28,11 @@ void Board::nextState(SDL_Scancode &key, bool &isFirstPress) {
   } else if (key == SDL_SCANCODE_LEFT || key == SDL_SCANCODE_RIGHT) {
     if (isFirstPress) {
       goHorizontal(key);
-      interval = 150;
+      timeInterval = 150;
       isFirstPress = false;
-    } else if (timeCur - timePrevKey > interval) {
+    } else if (timeCur - timePrevKey > timeInterval) {
       goHorizontal(key);
-      interval = 50;
+      timeInterval = 50;
     }
   } else if (key == SDL_SCANCODE_UP && isFirstPress) {
     rotate(1);
@@ -52,14 +42,24 @@ void Board::nextState(SDL_Scancode &key, bool &isFirstPress) {
     hardDrop();
     isFirstPress = false;
     timePrevKey = timeCur;
+  } else if (key == SDL_SCANCODE_C && isFirstPress) {
+    holdCurrent();
+    isFirstPress = false;
+    timePrevKey = timeCur;
   }
   if (timeCur - timePrevGoDown > 200) {
     goDown();
     timePrevGoDown = timeCur;
   }
   if (ghost.pos == current.pos) {
-    lockCurrent();
-    nextTetromino();
+    if (timeFirstTouch == 0) {
+      timeFirstTouch = timeCur;
+    } else if (timeCur - timeFirstTouch > 1000) {
+      lockCurrent();
+      nextTetromino();
+    }
+  } else {
+    timeFirstTouch = 0;
   }
   clearFullRows();
   if (isGameOver()) {
@@ -78,6 +78,8 @@ void Board::lockCurrent() {
   for (const auto &[x, y] : current.pos) {
     matrix[x][y] = LOCKED | current.shape;
   }
+  canHold = true;
+  timeFirstTouch = 0;
 }
 
 void Board::pushNewTetrominoSet() {
@@ -95,6 +97,19 @@ TextureType Board::getFromQueue() {
     pushNewTetrominoSet();
   }
   return t;
+}
+
+void Board::holdCurrent() {
+  if (canHold) {
+    if (hold == FREE) {
+      hold = current.shape;
+      nextTetromino();
+    } else {
+      std::swap(hold, current.shape);
+      current.getInitPos();
+    }
+    canHold = false;
+  }
 }
 
 bool Board::isWithinBounds(int row, int col) const {
@@ -158,7 +173,7 @@ void Board::attachToRenderer(
   for (int row = HIDDEN_ROWS; row < ROWS; ++row) {
     for (int col = 0; col < COLS; ++col) {
       if (current.isOccupying(row, col)) {
-        TextureType t = NORMAL | current.shape;
+        TextureType t = (timeFirstTouch? DYING : NORMAL) | current.shape;
         attachTextureToRenderer(textures[t], renderer, x, y);
       } else if (ghost.isOccupying(row, col)) {
         TextureType t = GHOST | current.shape;
@@ -172,16 +187,20 @@ void Board::attachToRenderer(
     y += CELL_POS_INCREMENT;
   }
   // Display the hold tetromino
-
+  if (hold != FREE) {
+    SDL_Texture *t = textures[WHOLE | hold];
+    const int _x = HOLD_POS_X + (HOLD_BLOCK_WIDTH - t->w) / 2;
+    const int _y = HOLD_POS_Y + (HOLD_BLOCK_HEIGHT - t->h) / 2;
+    attachTextureToRenderer(t, renderer, _x, _y);
+  }
   // Display the queue
-  x = 600;
-  y = 100;
+  y = QUEUE_POS_Y_INIT;
   for (int i = 0; i < 3; ++i) {
     SDL_Texture *t = textures[WHOLE | queue[i]];
-    int xx = x + (115 - t->w) / 2;
-    int yy = y + (68 - t->h) / 2;
-    attachTextureToRenderer(t, renderer, xx, yy);
-    y += 68;
+    const int _x = QUEUE_POS_X + (QUEUE_BLOCK_WIDTH - t->w) / 2;
+    const int _y = y + (QUEUE_BLOCK_HEIGHT - t->h) / 2;
+    attachTextureToRenderer(t, renderer, _x, _y);
+    y += QUEUE_BLOCK_HEIGHT;
   }
 }
 

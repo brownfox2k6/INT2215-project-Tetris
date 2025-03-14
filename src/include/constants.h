@@ -17,7 +17,17 @@
 #define CELL_SIZE           25                  // size of a cell in the matrix (contains tetrominoes)
 #define CELL_POS_X_INIT     (MATRIX_POS_X + 6)  // initial top left X-coordinate of the top left cell
 #define CELL_POS_Y_INIT     (MATRIX_POS_Y + 7)  // initial top left Y-coordinate of the top left cell
-#define CELL_POS_INCREMENT  (CELL_SIZE + 1)     // distance between top left points of two consecutive cells
+#define CELL_POS_INCREMENT  (CELL_SIZE + 1)     // distance between top left points of two consecutive 
+
+#define QUEUE_POS_X         600
+#define QUEUE_POS_Y_INIT    105
+#define QUEUE_BLOCK_WIDTH   115
+#define QUEUE_BLOCK_HEIGHT  68
+
+#define HOLD_POS_X         84
+#define HOLD_POS_Y         105
+#define HOLD_BLOCK_WIDTH   115
+#define HOLD_BLOCK_HEIGHT  68
 
 // path to images
 #define IMAGES_PATH  "./src/images/"

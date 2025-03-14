@@ -1,5 +1,5 @@
 source = *.cpp
-output = game.exe
+output = Tetris_v2.exe
 
 all:
 # clear screen

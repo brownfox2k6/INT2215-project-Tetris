@@ -20,10 +20,11 @@ public:
   static const int COLS = 10;
   TextureType matrix[ROWS][COLS];
   std::deque<TextureType> queue;
-  Tetromino current, ghost, hold;
+  Tetromino current, ghost;
+  TextureType hold;
   Uint64 timeCur, timePrevGoDown, timePrevKey;
-  bool isPlaying;
-  Uint64 interval;
+  bool isPlaying, canHold;
+  Uint64 timeInterval, timeFirstTouch;
 
   Board();
 
@@ -45,6 +46,9 @@ public:
   // get next tetromino from queue and erase it
   // push a new tetromino set if needed
   TextureType getFromQueue();
+
+  // hold current tetromino
+  void holdCurrent();
 
   // Checks if a position is within bounds
   bool isWithinBounds(int row, int col) const;
