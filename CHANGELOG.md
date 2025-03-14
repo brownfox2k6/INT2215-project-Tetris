@@ -1,3 +1,7 @@
+## [Version 2] - 14/03/2025
+- Đã có thể hold được Tetromino
+- Khi Tetromino chạm đáy hoặc không xuống hơn được nữa, cho 1 giây để di chuyển và xoay Tetromino. Hết 1 giây mới move on Tetromino tiếp theo
+
 ## [Version 1] - 13/03/2025
 - Đã có thể chơi được ở mức cơ bản
 - Một số bug còn tồn tại
@@ -6,3 +10,5 @@
   - Chưa hold được Tetromino
   - Khi Tetromino chạm đáy hoặc không xuống hơn được nữa, cần phải đợi thêm một chút để di chuyển, thay vì cố định luôn và move on Tetromino tiếp theo
   - Chưa có màn hình chờ bắt đầu/kết thúc
+  - Chưa hiện điểm, số hàng phá được và level
+  - Chưa tăng tốc Tetromino sau khi chơi được một thời gian nhất định
