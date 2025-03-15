@@ -1,4 +1,4 @@
-#include "SDL3_image/SDL_image.h"
+#include <SDL3_image/SDL_image.h>
 #include <board.hpp>
 #include <constants.h>
 #include <utils.hpp>

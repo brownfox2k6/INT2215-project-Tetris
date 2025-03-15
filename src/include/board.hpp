@@ -22,9 +22,10 @@ public:
   std::deque<TextureType> queue;
   Tetromino current, ghost;
   TextureType hold;
-  Uint64 timeCur, timePrevGoDown, timePrevKey;
+  Uint64 timeCur, timeInterval, timeFirstTouch;
   bool isPlaying, canHold;
-  Uint64 timeInterval, timeFirstTouch;
+  std::unordered_map<SDL_Scancode, Uint64> timePrevKey;
+  std::unordered_map<SDL_Scancode, bool> prevKeyboardState;
 
   Board();
 
@@ -32,7 +33,7 @@ public:
   void reset();
 
   // go to next state of the game
-  void nextState(SDL_Scancode &key, bool &isFirstPress);
+  void nextState();
 
   // get a new tetromino to `current` from `queue`
   void nextTetromino();
@@ -79,13 +80,13 @@ public:
 
   // make the current tetromino one step down
   // return true if it can go down, false otherwise
-  bool goDown();
+  bool softDrop();
 
   // make the current tetromino to move
   //   one step to the right if key == SDL_SCANCODE_RIGHT
   //   one step to the left if key == SDL_SCANCODE_LEFT
   // return true if it can go, false otherwise
-  bool goHorizontal(const SDL_Scancode &key);
+  bool goHorizontal(int dy);
 
   // make the current tetromino to rotate
   //   90 degrees to the right if d = 1

@@ -1,33 +1,30 @@
 #ifndef constants_h_
 #define constants_h_
 
+// parameters for application initialization
 #define WINDOW_TITLE   "Tetris game - [Bài tập lớn Lập trình nâng cao]"
 #define WINDOW_WIDTH   800  // width of the main window
 #define WINDOW_HEIGHT  600  // height of the main window
 #define DISPLAY_SCALE  1.50f  
 
-#define BACKGROUND_POS_X  0  // top left X-coordinate of the main background
-#define BACKGROUND_POS_Y  0  // top left Y-coordinate of the main background
+// parameters for displaying background
+#define BACKGROUND_POS_X  0  // top-left X-coordinate of the main background
+#define BACKGROUND_POS_Y  0  // top-left Y-coordinate of the main background
 
-#define MATRIX_WIDTH   272                                    // width of the matrix
-#define MATRIX_HEIGHT  534                                    // height of the matrix
-#define MATRIX_POS_X   ((WINDOW_WIDTH - MATRIX_WIDTH) / 2)    // top left X-coordinate of the matrix
-#define MATRIX_POS_Y   ((WINDOW_HEIGHT - MATRIX_HEIGHT) / 2)  // top left Y-coordinate of the matrix
+// parameters for displaying matrix
+#define MATRIX_POS_X        264  // top-left X-coordinate of the matrix
+#define MATRIX_POS_Y        33   // top-left Y-coordinate of the matrix
+#define CELL_POS_X_INIT     270  // initial top-left X-coordinate of the top-left cell
+#define CELL_POS_Y_INIT     40   // initial top-left Y-coordinate of the top-left cell
+#define CELL_POS_INCREMENT  26   // distance between two top-left points of two consecutive cells
 
-#define CELL_SIZE           25                  // size of a cell in the matrix (contains tetrominoes)
-#define CELL_POS_X_INIT     (MATRIX_POS_X + 6)  // initial top left X-coordinate of the top left cell
-#define CELL_POS_Y_INIT     (MATRIX_POS_Y + 7)  // initial top left Y-coordinate of the top left cell
-#define CELL_POS_INCREMENT  (CELL_SIZE + 1)     // distance between top left points of two consecutive 
-
-#define QUEUE_POS_X         600
-#define QUEUE_POS_Y_INIT    105
-#define QUEUE_BLOCK_WIDTH   115
-#define QUEUE_BLOCK_HEIGHT  68
-
-#define HOLD_POS_X         84
-#define HOLD_POS_Y         105
-#define HOLD_BLOCK_WIDTH   115
-#define HOLD_BLOCK_HEIGHT  68
+// for displaying NEXT and HOLD section
+#define QUEUE_POS_X       600  // top-left X-coordinate of the NEXT section
+#define QUEUE_POS_Y_INIT  105  // initial top-left Y-coordinate of the NEXT section
+#define HOLD_POS_X        84   // top-left X-coordinate of the HOLD section
+#define HOLD_POS_Y        105  // top-left Y-coordinate of the HOLD section
+#define BLOCK_WIDTH       115  // width of a Tetromino image
+#define BLOCK_HEIGHT      68   // height of a Tetromino image
 
 // path to images
 #define IMAGES_PATH  "./src/images/"

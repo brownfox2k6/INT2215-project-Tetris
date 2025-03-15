@@ -1,8 +1,13 @@
+#include "SDL3/SDL_keyboard.h"
+#include "SDL3/SDL_render.h"
+#include "SDL3/SDL_scancode.h"
+#include "SDL3/SDL_timer.h"
 #include <board.hpp>
 #include <constants.h>
 #include <random.hpp>
 #include <tetromino.hpp>
 #include <utils.hpp>
+
 
 Board::Board() { reset(); }
 
@@ -14,42 +19,64 @@ void Board::reset() {
   queue.clear();
   pushNewTetrominoSet();
   nextTetromino();
-  timeCur = timePrevGoDown = timePrevKey = SDL_GetTicks();
+  timeCur = SDL_GetTicks();
+  for (SDL_Scancode key :
+       {SDL_SCANCODE_UP, SDL_SCANCODE_RIGHT, SDL_SCANCODE_DOWN,
+        SDL_SCANCODE_LEFT, SDL_SCANCODE_SPACE, SDL_SCANCODE_C,
+        SDL_SCANCODE_X}) {
+    timePrevKey[key] = timeCur;
+    prevKeyboardState[key] = false;
+  }
   isPlaying = canHold = true;
   timeFirstTouch = 0;
 }
 
-void Board::nextState(SDL_Scancode &key, bool &isFirstPress) {
-  timeCur = SDL_GetTicks();
+void Board::nextState() {
   updatePos();
-  if (key == SDL_SCANCODE_DOWN && timeCur - timePrevKey > 50) {
-    goDown();
-    timePrevKey = timeCur;
-  } else if (key == SDL_SCANCODE_LEFT || key == SDL_SCANCODE_RIGHT) {
-    if (isFirstPress) {
-      goHorizontal(key);
-      timeInterval = 150;
-      isFirstPress = false;
-    } else if (timeCur - timePrevKey > timeInterval) {
-      goHorizontal(key);
-      timeInterval = 50;
+  timeCur = SDL_GetTicks();
+  const bool *keyboardState = SDL_GetKeyboardState(NULL);
+  if (keyboardState[SDL_SCANCODE_DOWN]) {
+    if (timeCur - timePrevKey[SDL_SCANCODE_DOWN] > 50) {
+      softDrop();
+      timePrevKey[SDL_SCANCODE_DOWN] = timeCur;
     }
-  } else if (key == SDL_SCANCODE_UP && isFirstPress) {
-    rotate(1);
-    isFirstPress = false;
-    timePrevKey = timeCur;
-  } else if (key == SDL_SCANCODE_SPACE && isFirstPress) {
-    hardDrop();
-    isFirstPress = false;
-    timePrevKey = timeCur;
-  } else if (key == SDL_SCANCODE_C && isFirstPress) {
-    holdCurrent();
-    isFirstPress = false;
-    timePrevKey = timeCur;
   }
-  if (timeCur - timePrevGoDown > 200) {
-    goDown();
-    timePrevGoDown = timeCur;
+  if (keyboardState[SDL_SCANCODE_LEFT]) {
+    if (!prevKeyboardState[SDL_SCANCODE_LEFT]) {
+      goHorizontal(-1);
+      timeInterval = 150;
+      timePrevKey[SDL_SCANCODE_LEFT] = timeCur;
+    } else if (timeCur - timePrevKey[SDL_SCANCODE_LEFT] > timeInterval) {
+      goHorizontal(-1);
+      timeInterval = 50;
+      timePrevKey[SDL_SCANCODE_LEFT] = timeCur;
+    }
+  }
+  if (keyboardState[SDL_SCANCODE_RIGHT]) {
+    if (!prevKeyboardState[SDL_SCANCODE_RIGHT]) {
+      goHorizontal(1);
+      timeInterval = 150;
+      timePrevKey[SDL_SCANCODE_RIGHT] = timeCur;
+    } else if (timeCur - timePrevKey[SDL_SCANCODE_RIGHT] > timeInterval) {
+      goHorizontal(1);
+      timeInterval = 50;
+      timePrevKey[SDL_SCANCODE_RIGHT] = timeCur;
+    }
+  }
+  if (keyboardState[SDL_SCANCODE_UP] && !prevKeyboardState[SDL_SCANCODE_UP]) {
+    rotate(1);
+  }
+  if (keyboardState[SDL_SCANCODE_X] && !prevKeyboardState[SDL_SCANCODE_X]) {
+    rotate(-1);
+  }
+  if (keyboardState[SDL_SCANCODE_SPACE] && !prevKeyboardState[SDL_SCANCODE_SPACE]) {
+    hardDrop();
+  }
+  if (keyboardState[SDL_SCANCODE_C] && !prevKeyboardState[SDL_SCANCODE_C]) {
+    holdCurrent();
+  }
+  if (timeCur - timePrevKey[SDL_SCANCODE_DOWN] > 200) {
+    softDrop();
   }
   if (ghost.pos == current.pos) {
     if (timeFirstTouch == 0) {
@@ -64,6 +91,12 @@ void Board::nextState(SDL_Scancode &key, bool &isFirstPress) {
   clearFullRows();
   if (isGameOver()) {
     reset();
+  }
+  for (SDL_Scancode key :
+       {SDL_SCANCODE_UP, SDL_SCANCODE_RIGHT, SDL_SCANCODE_DOWN,
+        SDL_SCANCODE_LEFT, SDL_SCANCODE_SPACE, SDL_SCANCODE_C,
+        SDL_SCANCODE_X}) {
+    prevKeyboardState[key] = keyboardState[key];
   }
 }
 
@@ -172,15 +205,15 @@ void Board::attachToRenderer(
   int y = CELL_POS_Y_INIT;
   for (int row = HIDDEN_ROWS; row < ROWS; ++row) {
     for (int col = 0; col < COLS; ++col) {
+      TextureType t;
       if (current.isOccupying(row, col)) {
-        TextureType t = (timeFirstTouch? DYING : NORMAL) | current.shape;
-        attachTextureToRenderer(textures[t], renderer, x, y);
+        t = (timeFirstTouch ? DYING : NORMAL) | current.shape;
       } else if (ghost.isOccupying(row, col)) {
-        TextureType t = GHOST | current.shape;
-        attachTextureToRenderer(textures[t], renderer, x, y);
+        t = GHOST | current.shape;
       } else {
-        attachTextureToRenderer(textures[matrix[row][col]], renderer, x, y);
+        t = matrix[row][col];
       }
+      attachTextureToRenderer(textures[t], renderer, x, y);
       x += CELL_POS_INCREMENT;
     }
     x = CELL_POS_X_INIT;
@@ -189,42 +222,40 @@ void Board::attachToRenderer(
   // Display the hold tetromino
   if (hold != FREE) {
     SDL_Texture *t = textures[WHOLE | hold];
-    const int _x = HOLD_POS_X + (HOLD_BLOCK_WIDTH - t->w) / 2;
-    const int _y = HOLD_POS_Y + (HOLD_BLOCK_HEIGHT - t->h) / 2;
+    const int _x = HOLD_POS_X + (BLOCK_WIDTH - t->w) / 2;
+    const int _y = HOLD_POS_Y + (BLOCK_HEIGHT - t->h) / 2;
     attachTextureToRenderer(t, renderer, _x, _y);
   }
   // Display the queue
   y = QUEUE_POS_Y_INIT;
   for (int i = 0; i < 3; ++i) {
     SDL_Texture *t = textures[WHOLE | queue[i]];
-    const int _x = QUEUE_POS_X + (QUEUE_BLOCK_WIDTH - t->w) / 2;
-    const int _y = y + (QUEUE_BLOCK_HEIGHT - t->h) / 2;
+    const int _x = QUEUE_POS_X + (BLOCK_WIDTH - t->w) / 2;
+    const int _y = y + (BLOCK_HEIGHT - t->h) / 2;
     attachTextureToRenderer(t, renderer, _x, _y);
-    y += QUEUE_BLOCK_HEIGHT;
+    y += BLOCK_HEIGHT;
   }
 }
 
-bool Board::goDown() {
+bool Board::softDrop() {
   for (const auto &[row, col] : current.pos) {
     if (isOccupied(row + 1, col)) {
       return false;
     }
   }
   ++current.dx;
-  timePrevGoDown = timeCur;
+  timePrevKey[SDL_SCANCODE_DOWN] = timeCur;
   return true;
 }
 
-bool Board::goHorizontal(const SDL_Scancode &key) {
-  assert(key == SDL_SCANCODE_RIGHT || key == SDL_SCANCODE_LEFT);
-  int dy = key == SDL_SCANCODE_RIGHT? 1 : -1;
+bool Board::goHorizontal(int dy) {
+  assert(abs(dy) == 1);
   for (const auto &[row, col] : current.pos) {
     if (isOccupied(row, col + dy)) {
       return false;
     }
   }
   current.dy += dy;
-  timePrevKey = timeCur;
   return true;
 }
 
@@ -237,7 +268,6 @@ bool Board::rotate(int d) {
     }
   }
   current.dir = dir;
-  timePrevKey = timeCur;
   return true;
 }
 
@@ -245,7 +275,6 @@ void Board::hardDrop() {
   current.pos = ghost.pos;
   lockCurrent();
   nextTetromino();
-  timePrevKey = timeCur;
 }
 
 void Board::updatePos() {

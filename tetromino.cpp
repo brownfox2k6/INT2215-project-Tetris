@@ -2,7 +2,6 @@
 #include <tetromino.hpp>
 #include <utils.hpp>
 #include <vector>
-#include <iostream>
 
 Tetromino::Tetromino() { erase(); }
 
