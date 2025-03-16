@@ -1,6 +1,6 @@
 # INT2215-project-Tetris
 
-## Thông tin về sản phẩm
+## Thông tin về project
 - **Mô tả game:** [Wikipedia](https://vi.wikipedia.org/wiki/Tetris)
 - **Tác giả:** Nguyễn Trọng Đại - 24021400
 - **Ngôn ngữ lập trình:** C++20
@@ -18,10 +18,6 @@
 |   `↑`   | Rotate right |
 |   `X`   | Rotate left  |
 |   `C`   | Hold         |
-
-
-## Lịch sử cập nhật
-Đọc tại [đây](https://github.com/brownfox2k6/INT2215-project-Tetris/blob/main/CHANGELOG.md)
 
 ## Nguồn tham khảo
 - Code mẫu tại [trang chủ của SDL](https://examples.libsdl.org/SDL3/);
