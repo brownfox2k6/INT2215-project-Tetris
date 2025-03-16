@@ -8,6 +8,16 @@
   - [SDL 3.2.4](https://github.com/libsdl-org/SDL/releases/tag/release-3.2.4)
   - [SDL_image 3.2.0](https://github.com/libsdl-org/SDL_image/releases/tag/release-3.2.0)
 
+## Các phím bấm
+- **Left arrow:** Move left
+- **Right arrow:** Move right
+- **Down arrow:** Soft drop
+- **Space:** Hard drop
+- **Up arrow:** Rotate right
+- **X:** Rotate left
+- **C:** Hold
+
+
 ## Lịch sử cập nhật
 Đọc tại [đây](https://github.com/brownfox2k6/INT2215-project-Tetris/blob/main/CHANGELOG.md)
 
