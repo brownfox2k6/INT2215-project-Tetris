@@ -9,13 +9,15 @@
   - [SDL_image 3.2.0](https://github.com/libsdl-org/SDL_image/releases/tag/release-3.2.0)
 
 ## Các phím bấm
-- **Left arrow:** Move left
-- **Right arrow:** Move right
-- **Down arrow:** Soft drop
-- **Space:** Hard drop
-- **Up arrow:** Rotate right
-- **X:** Rotate left
-- **C:** Hold
+|   Key   | Action       |
+|:-------:| ------------ |
+|   `←`   | Move left    |
+|   `→`   | Move right   |
+|   `↓`   | Soft drop    |
+| `Space` | Hard drop    |
+|   `↑`   | Rotate right |
+|   `X`   | Rotate left  |
+|   `C`   | Hold         |
 
 
 ## Lịch sử cập nhật
