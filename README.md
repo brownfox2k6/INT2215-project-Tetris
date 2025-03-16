@@ -5,8 +5,8 @@
 - **Tác giả:** Nguyễn Trọng Đại - 24021400
 - **Ngôn ngữ lập trình:** C++20
 - **Thư viện đồ hoạ:**
-  - [SDL 3.2.4](https://github.com/libsdl-org/SDL/releases/tag/release-3.2.4)
-  - [SDL_image 3.2.0](https://github.com/libsdl-org/SDL_image/releases/tag/release-3.2.0)
+  - [SDL 3.2.8](https://github.com/libsdl-org/SDL/releases/tag/release-3.2.8)
+  - [SDL_image 3.2.4](https://github.com/libsdl-org/SDL_image/releases/tag/release-3.2.4)
 
 ## Các phím bấm
 |   Key   | Action       |

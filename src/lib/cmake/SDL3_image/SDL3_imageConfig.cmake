@@ -41,7 +41,7 @@ set(SDLIMAGE_BACKEND_IMAGEIO   OFF)
 set(SDLIMAGE_BACKEND_STB       ON)
 set(SDLIMAGE_BACKEND_WIC       OFF)
 
-set(SDLIMAGE_SDL3_REQUIRED_VERSION  3.2.0)
+set(SDLIMAGE_SDL3_REQUIRED_VERSION  3.2.6)
 
 set(SDL3_image_SDL3_image-shared_FOUND FALSE)
 if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/SDL3_image-shared-targets.cmake")
@@ -96,7 +96,7 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/SDL3_image-static-targets.cmake")
             find_dependency(JPEG)
         endif()
 
-        if(SDLIMAGE_JXL AND NOT TARGET libjxl::libjxl)
+        if(SDLIMAGE_JXL AND NOT TARGET libjxl::libjxl AND NOT SDLIMAGE_JXL_SHARED)
             list(APPEND libjxl_ROOT "${CMAKE_CURRENT_LIST_DIR}")
             find_dependency(libjxl)
         endif()
@@ -105,7 +105,7 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/SDL3_image-static-targets.cmake")
             find_dependency(PNG)
         endif()
 
-        if(SDLIMAGE_TIF AND NOT TARGET TIFF::TIFF AND NOT (SDLIMAGE_BACKEND_IMAGEIO OR SDLIMAGE_BACKEND_WIC))
+        if(SDLIMAGE_TIF AND NOT TARGET TIFF::TIFF AND NOT SDLIMAGE_TIF_SHARED AND NOT (SDLIMAGE_BACKEND_IMAGEIO OR SDLIMAGE_BACKEND_WIC))
             find_dependency(TIFF)
         endif()
 
@@ -142,6 +142,9 @@ if(NOT TARGET SDL3_image::SDL3_image)
     endif()
 endif()
 
+if(NOT SDL3_image_COMPONENTS AND NOT TARGET SDL3_image::SDL3_image-shared AND NOT TARGET SDL3_image::SDL3_image-static)
+    set(SDL3_image_FOUND FALSE)
+endif()
 
 ####### Expanded from @PACKAGE_INIT@ by configure_package_config_file() #######
 ####### Any changes to this file will be overwritten by the next CMake run ####
