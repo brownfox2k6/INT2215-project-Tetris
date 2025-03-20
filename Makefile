@@ -1,4 +1,4 @@
-source = *.cpp
+source = main.cpp ./src/*.cpp
 output = Tetris_v4.exe
 
 INCLUDES = -Isrc/include
