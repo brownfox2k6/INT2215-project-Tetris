@@ -9,13 +9,12 @@
 #include <unordered_map>
 #include <utils.hpp>
 
-
 class Board {
 private:
 public:
   // just last 20 rows are used to display, first 3 rows are hidden
   static const int VISIBLE_ROWS = 20;
-  static const int HIDDEN_ROWS = 4;
+  static const int HIDDEN_ROWS = 3;
   static const int ROWS = HIDDEN_ROWS + VISIBLE_ROWS;
   static const int COLS = 10;
   TextureType matrix[ROWS][COLS];
@@ -26,6 +25,7 @@ public:
   bool isPlaying, canHold;
   std::unordered_map<SDL_Scancode, Uint64> timePrevKey;
   std::unordered_map<SDL_Scancode, bool> prevKeyboardState;
+  int linesCleared;
 
   Board();
 
@@ -89,15 +89,17 @@ public:
   bool goHorizontal(int dy);
 
   // make the current tetromino to rotate
-  //   90 degrees to the right if d = 1
-  //   90 degrees to the leftt if d = -1
-  // return true if it can rotate, false otherwise
+  //   to the left if d == -1
+  //   to the right if d == 1
+  // returns false if it can rotate, false otherwise.
+  // implementation based on
+  // https://tetris.wiki/Super_Rotation_System#Wall_Kicks
   bool rotate(int d);
 
   // hard drop current tetromino and go to next one
   void hardDrop();
 
-  // update position of current tetromino and its ghost 
+  // update position of current tetromino and its ghost
   void updatePos();
 };
 
