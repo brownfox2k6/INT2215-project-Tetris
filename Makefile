@@ -2,7 +2,7 @@ source = *.cpp
 output = Tetris_v4.exe
 
 INCLUDES = -Isrc/include
-LDFLAGS = -Lsrc/lib -lSDL3 -lSDL3_image -lSDL3_ttf
+LDFLAGS = -Lsrc/lib -lSDL3 -lSDL3_image
 
 all:
 # compile
