@@ -5,7 +5,7 @@
 #define WINDOW_TITLE   "Tetris game - [Bài tập lớn Lập trình nâng cao]"
 #define WINDOW_WIDTH   800  // width of the main window
 #define WINDOW_HEIGHT  600  // height of the main window
-#define DISPLAY_SCALE  1.50f  
+#define DISPLAY_SCALE  1.00f  
 
 // parameters for displaying background
 #define BACKGROUND_POS_X  0  // top-left X-coordinate of the main background

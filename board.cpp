@@ -1,13 +1,14 @@
-#include "SDL3/SDL_keyboard.h"
-#include "SDL3/SDL_render.h"
-#include "SDL3/SDL_scancode.h"
-#include "SDL3/SDL_timer.h"
+#include <SDL3_ttf/SDL_ttf.h>
 #include <board.hpp>
 #include <constants.h>
 #include <random.hpp>
 #include <tetromino.hpp>
 #include <utils.hpp>
 
+const SDL_Scancode KEYS[] = {SDL_SCANCODE_UP,    SDL_SCANCODE_RIGHT,
+                             SDL_SCANCODE_DOWN,  SDL_SCANCODE_LEFT,
+                             SDL_SCANCODE_SPACE, SDL_SCANCODE_C,
+                             SDL_SCANCODE_X};
 
 Board::Board() { reset(); }
 
@@ -20,15 +21,12 @@ void Board::reset() {
   pushNewTetrominoSet();
   nextTetromino();
   timeCur = SDL_GetTicks();
-  for (SDL_Scancode key :
-       {SDL_SCANCODE_UP, SDL_SCANCODE_RIGHT, SDL_SCANCODE_DOWN,
-        SDL_SCANCODE_LEFT, SDL_SCANCODE_SPACE, SDL_SCANCODE_C,
-        SDL_SCANCODE_X}) {
+  for (SDL_Scancode key : KEYS) {
     timePrevKey[key] = timeCur;
     prevKeyboardState[key] = false;
   }
   isPlaying = canHold = true;
-  timeFirstTouch = 0;
+  timeFirstTouch = linesCleared = 0;
 }
 
 void Board::nextState() {
@@ -69,13 +67,14 @@ void Board::nextState() {
   if (keyboardState[SDL_SCANCODE_X] && !prevKeyboardState[SDL_SCANCODE_X]) {
     rotate(-1);
   }
-  if (keyboardState[SDL_SCANCODE_SPACE] && !prevKeyboardState[SDL_SCANCODE_SPACE]) {
+  if (keyboardState[SDL_SCANCODE_SPACE] &&
+      !prevKeyboardState[SDL_SCANCODE_SPACE]) {
     hardDrop();
   }
   if (keyboardState[SDL_SCANCODE_C] && !prevKeyboardState[SDL_SCANCODE_C]) {
     holdCurrent();
   }
-  if (timeCur - timePrevKey[SDL_SCANCODE_DOWN] > 200) {
+  if (timeCur - timePrevKey[SDL_SCANCODE_DOWN] > 100) {
     softDrop();
   }
   if (ghost.pos == current.pos) {
@@ -92,10 +91,7 @@ void Board::nextState() {
   if (isGameOver()) {
     reset();
   }
-  for (SDL_Scancode key :
-       {SDL_SCANCODE_UP, SDL_SCANCODE_RIGHT, SDL_SCANCODE_DOWN,
-        SDL_SCANCODE_LEFT, SDL_SCANCODE_SPACE, SDL_SCANCODE_C,
-        SDL_SCANCODE_X}) {
+  for (SDL_Scancode key : KEYS) {
     prevKeyboardState[key] = keyboardState[key];
   }
 }
@@ -166,11 +162,11 @@ int Board::clearFullRows() {
   int cleared = 0;
   for (int row = ROWS - 1; row >= 0; --row) {
     if (isRowFull(row)) {
-      clearRow(row);
       shiftRowsDown(row);
       ++cleared;
     }
   }
+  linesCleared += cleared;
   return cleared;
 }
 
@@ -262,13 +258,72 @@ bool Board::goHorizontal(int dy) {
 bool Board::rotate(int d) {
   assert(abs(d) == 1);
   int dir = (current.dir + d + 4) % 4;
-  for (const auto &[row, col] : current.getPos(dir)) {
-    if (isOccupied(row, col)) {
-      return false;
+  std::vector<std::pair<int, int>> tests;
+  if (d == -1) {
+    if (current.shape == O) {
+      tests = {{0, 0}};
+    } else if (current.shape == I) {
+      if (dir == 0) {
+        tests = {{0, 0}, {+2, 0}, {-1, 0}, {+2, +1}, {-1, -2}};
+      } else if (dir == 1) {
+        tests = {{0, 0}, {+1, 0}, {-2, 0}, {+1, -2}, {-2, +1}};
+      } else if (dir == 2) {
+        tests = {{0, 0}, {-2, 0}, {+1, 0}, {-2, -1}, {+1, +2}};
+      } else { // dir == 3
+        tests = {{0, 0}, {-1, 0}, {+2, 0}, {-1, +2}, {+2, -1}};
+      }
+    } else { // current.shape == J, L, S, T or Z
+      if (dir == 0) {
+        tests = {{0, 0}, {+1, 0}, {+1, -1}, {0, +2}, {+1, +2}};
+      } else if (dir == 1) {
+        tests = {{0, 0}, {-1, 0}, {-1, +1}, {0, -2}, {-1, -2}};
+      } else if (dir == 2) {
+        tests = {{0, 0}, {-1, 0}, {-1, -1}, {0, +2}, {-1, +2}};
+      } else { // dir == 3
+        tests = {{0, 0}, {+1, 0}, {+1, +1}, {0, -2}, {+1, -2}};
+      }
+    }
+  } else { // d == 1
+    if (current.shape == O) {
+      tests = {{0, 0}};
+    } else if (current.shape == I) {
+      if (dir == 0) {
+        tests = {{0, 0}, {+1, 0}, {-2, 0}, {+1, -2}, {-2, +1}};
+      } else if (dir == 1) {
+        tests = {{0, 0}, {-2, 0}, {+1, 0}, {-2, -1}, {+1, +2}};
+      } else if (dir == 2) {
+        tests = {{0, 0}, {-1, 0}, {+2, 0}, {-1, +2}, {+2, -1}};
+      } else {
+        tests = {{0, 0}, {+2, 0}, {-1, 0}, {+2, +1}, {-1, -2}};
+      }
+    } else { // current.shape == J, L, S, T or Z
+      if (dir == 0) {
+        tests = {{0, 0}, {-1, 0}, {-1, -1}, {0, +2}, {-1, +2}};
+      } else if (dir == 1) {
+        tests = {{0, 0}, {-1, 0}, {-1, +1}, {0, -2}, {-1, -2}};
+      } else if (dir == 2) {
+        tests = {{0, 0}, {+1, 0}, {+1, -1}, {0, +2}, {+1, +2}};
+      } else {
+        tests = {{0, 0}, {+1, 0}, {+1, +1}, {0, -2}, {+1, -2}};
+      }
     }
   }
-  current.dir = dir;
-  return true;
+  for (const auto &[dx, dy] : tests) {
+    bool ok = true;
+    for (const auto &[row, col] : current.getPos(dir)) {
+      if (isOccupied(row + dx, col + dy)) {
+        ok = false;
+        break;
+      }
+    }
+    if (ok) {
+      current.dir = dir;
+      current.dx += dx;
+      current.dy += dy;
+      return true;
+    }
+  }
+  return false;
 }
 
 void Board::hardDrop() {

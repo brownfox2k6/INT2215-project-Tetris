@@ -15,7 +15,8 @@ public:
   Tetromino();
   Tetromino(TextureType _shape);
 
-  // initialize its position on the board (at the start)
+  // initialize its position on the board (at the start), implementation based
+  // on https://tetris.wiki/Super_Rotation_System#Spawn_Orientation_and_Location
   void getInitPos();
 
   // delete its shape (by making it FREE)
@@ -34,4 +35,4 @@ public:
   std::vector<std::pair<int, int>> getPos(int dir);
 };
 
-#endif  // tetromino_hpp_
+#endif // tetromino_hpp_
