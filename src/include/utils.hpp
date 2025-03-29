@@ -1,7 +1,9 @@
 #ifndef utils_hpp_
 #define utils_hpp_
 
+#include "SDL3_ttf/SDL_ttf.h"
 #include <SDL3/SDL.h>
+#include <string>
 #include <unordered_map>
 
 struct Coordinate {
@@ -42,7 +44,14 @@ void loadTexturesToRenderer(
     std::unordered_map<TextureType, SDL_Texture *> &textures,
     SDL_Renderer *renderer);
 
+// load fonts used in this program
+void loadFonts(std::unordered_map<std::string, TTF_Font *> &fonts);
+
 // load program logo
 void loadLogo(SDL_Window *window);
+
+// write text on renderer (center aligned)
+void writeText(SDL_Renderer *renderer, std::string message, TTF_Font *font,
+               Uint8 r, Uint8 g, Uint8 b, int x, int y, int w, int h);
 
 #endif // utils_hpp_

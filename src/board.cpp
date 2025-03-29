@@ -1,6 +1,9 @@
+#include <SDL3_ttf/SDL_ttf.h>
+#include <algorithm>
 #include <board.hpp>
 #include <constants.h>
 #include <random.hpp>
+#include <string>
 #include <tetromino.hpp>
 #include <utils.hpp>
 
@@ -25,7 +28,8 @@ void Board::reset() {
     prevKeyboardState[key] = false;
   }
   isPlaying = canHold = true;
-  timeFirstTouch = linesCleared = 0;
+  timeFirstTouch = linesCleared = linesCount = 0;
+  level = 1;
 }
 
 void Board::nextState() {
@@ -73,7 +77,7 @@ void Board::nextState() {
   if (keyboardState[SDL_SCANCODE_C] && !prevKeyboardState[SDL_SCANCODE_C]) {
     holdCurrent();
   }
-  if (timeCur - timePrevKey[SDL_SCANCODE_DOWN] > 100) {
+  if (timeCur - timePrevKey[SDL_SCANCODE_DOWN] > autoDropInterval[level]) {
     softDrop();
   }
   if (ghost.pos == current.pos) {
@@ -165,7 +169,21 @@ int Board::clearFullRows() {
       ++cleared;
     }
   }
+  if (cleared == 1) {
+    score += 100 * level;
+  } else if (cleared == 2) {
+    score += 300 * level;
+  } else if (cleared == 3) {
+    score += 500 * level;
+  } else if (cleared == 4) {
+    score += 800 * level;
+  }
   linesCleared += cleared;
+  linesCount += cleared;
+  if (linesCount >= 10) {
+    level = std::min(15, level + 1);
+    linesCount = 0;
+  }
   return cleared;
 }
 
@@ -194,6 +212,7 @@ bool Board::isGameOver() const {
 
 void Board::attachToRenderer(
     std::unordered_map<TextureType, SDL_Texture *> &textures,
+    std::unordered_map<std::string, TTF_Font *> &fonts,
     SDL_Renderer *renderer) {
   // Display the matrix
   int x = CELL_POS_X_INIT;
@@ -230,6 +249,15 @@ void Board::attachToRenderer(
     attachTextureToRenderer(t, renderer, _x, _y);
     y += BLOCK_HEIGHT;
   }
+  // Display score
+  writeText(renderer, std::to_string(score), fonts["consolab 24"], COLOR_WHITE,
+            83, 378, 120, 28);
+  // Display level
+  writeText(renderer, std::to_string(level), fonts["consolab 24"], COLOR_WHITE,
+            83, 438, 120, 28);
+  // Display lines cleared
+  writeText(renderer, std::to_string(linesCleared), fonts["consolab 24"],
+            COLOR_WHITE, 83, 498, 120, 28);
 }
 
 bool Board::softDrop() {

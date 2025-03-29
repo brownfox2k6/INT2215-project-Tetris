@@ -12,6 +12,9 @@
 class Board {
 private:
 public:
+  // drop rate (ms. per row) by level (1 to 15)
+  const Uint64 autoDropInterval[16] = {0,   800, 717, 633, 550, 467, 383, 300,
+                                       217, 133, 100, 83,  67,  50,  33,  17};
   // just last 20 rows are used to display, first 3 rows are hidden
   static const int VISIBLE_ROWS = 20;
   static const int HIDDEN_ROWS = 3;
@@ -25,7 +28,7 @@ public:
   bool isPlaying, canHold;
   std::unordered_map<SDL_Scancode, Uint64> timePrevKey;
   std::unordered_map<SDL_Scancode, bool> prevKeyboardState;
-  int linesCleared;
+  int level, linesCleared, linesCount, score;
 
   Board();
 
@@ -76,6 +79,7 @@ public:
   // attach board to the Renderer
   void
   attachToRenderer(std::unordered_map<TextureType, SDL_Texture *> &textures,
+                   std::unordered_map<std::string, TTF_Font *> &fonts,
                    SDL_Renderer *renderer);
 
   // make the current tetromino one step down

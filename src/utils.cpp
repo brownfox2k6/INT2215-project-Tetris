@@ -1,6 +1,13 @@
+#include "SDL3/SDL_error.h"
+#include "SDL3/SDL_stdinc.h"
 #include <SDL3_image/SDL_image.h>
+#include <SDL3_ttf/SDL_ttf.h>
 #include <board.hpp>
 #include <constants.h>
+#include <cstdlib>
+#include <iostream>
+#include <string>
+#include <unordered_map>
 #include <utils.hpp>
 
 TextureType operator|(TextureType a, TextureType b) {
@@ -9,14 +16,15 @@ TextureType operator|(TextureType a, TextureType b) {
 
 void attachTextureToRenderer(SDL_Texture *texture, SDL_Renderer *renderer,
                              int x, int y) {
-  if (texture) {
-    SDL_FRect rect;
-    rect.x = DISPLAY_SCALE * x;
-    rect.y = DISPLAY_SCALE * y;
-    rect.w = DISPLAY_SCALE * texture->w;
-    rect.h = DISPLAY_SCALE * texture->h;
-    SDL_RenderTexture(renderer, texture, NULL, &rect);
+  if (!texture) {
+    return;
   }
+  SDL_FRect rect;
+  rect.x = DISPLAY_SCALE * x;
+  rect.y = DISPLAY_SCALE * y;
+  rect.w = DISPLAY_SCALE * texture->w;
+  rect.h = DISPLAY_SCALE * texture->h;
+  SDL_RenderTexture(renderer, texture, NULL, &rect);
 }
 
 void loadTexturesToRenderer(
@@ -61,8 +69,24 @@ void loadTexturesToRenderer(
   textures[WHOLE | Z] = IMG_LoadTexture(renderer, WHOLE_PATH Z_PNG);
 }
 
+void loadFonts(std::unordered_map<std::string, TTF_Font *> &fonts) {
+  fonts["consolab 24"] = TTF_OpenFont(FONTS_PATH "consolab.ttf", 24);
+}
+
 void loadLogo(SDL_Window *window) {
   SDL_Surface *logo = IMG_Load(LOGO_PNG);
   SDL_SetWindowIcon(window, logo);
   SDL_DestroySurface(logo);
+}
+
+void writeText(SDL_Renderer *renderer, std::string message, TTF_Font *font,
+               Uint8 r, Uint8 g, Uint8 b, int x, int y, int w, int h) {
+  SDL_Color color = {r, g, b};
+  SDL_Surface *surface = TTF_RenderText_Solid(font, message.c_str(), 0, color);
+  SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
+  SDL_DestroySurface(surface);
+  int xx = x + (w - texture->w) / 2;
+  int yy = y + (h - texture->h) / 2;
+  attachTextureToRenderer(texture, renderer, xx, yy);
+  SDL_DestroyTexture(texture);
 }

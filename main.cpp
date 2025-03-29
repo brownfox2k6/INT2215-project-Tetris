@@ -1,3 +1,6 @@
+#include "SDL3_ttf/SDL_ttf.h"
+#include <string>
+#include <unordered_map>
 #define SDL_MAIN_USE_CALLBACKS // use the callbacks instead of main()
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
@@ -10,6 +13,7 @@
 SDL_Window *window;
 SDL_Renderer *renderer;
 std::unordered_map<TextureType, SDL_Texture *> textures;
+std::unordered_map<std::string, TTF_Font *> fonts;
 Board board;
 
 // This function runs once at startup.
@@ -19,6 +23,8 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
                               WINDOW_HEIGHT * DISPLAY_SCALE, 0, &window,
                               &renderer);
   loadTexturesToRenderer(textures, renderer);
+  TTF_Init();
+  loadFonts(fonts);
   loadLogo(window);
   return SDL_APP_CONTINUE;
 }
@@ -39,7 +45,7 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
   attachTextureToRenderer(textures[MATRIX], renderer, MATRIX_POS_X,
                           MATRIX_POS_Y);
   board.nextState();
-  board.attachToRenderer(textures, renderer);
+  board.attachToRenderer(textures, fonts, renderer);
   SDL_RenderPresent(renderer);
   return SDL_APP_CONTINUE;
 }

@@ -44,4 +44,10 @@
 #define T_PNG  "T.png"
 #define Z_PNG  "Z.png"
 
+// path to fonts
+#define FONTS_PATH  "./src/fonts/"
+
+// define colors
+#define COLOR_WHITE 255, 255, 255
+
 #endif  // constants_h_
