@@ -54,4 +54,10 @@ void loadLogo(SDL_Window *window);
 void writeText(SDL_Renderer *renderer, std::string message, TTF_Font *font,
                Uint8 r, Uint8 g, Uint8 b, int x, int y, int w, int h);
 
+// right align the string, using a specified character as the fill character.
+std::string rjust(std::string s, int len, char pad);
+
+// convert milisec to time string (format: <minutes>:<seconds>.<miliseconds>)
+std::string convertMilisecToTimeString(Uint64 ms);
+
 #endif // utils_hpp_

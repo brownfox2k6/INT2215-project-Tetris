@@ -24,7 +24,7 @@ public:
   std::deque<TextureType> queue;
   Tetromino current, ghost;
   TextureType hold;
-  Uint64 timeCur, timeInterval, timeFirstTouch;
+  Uint64 timeCur, timeInterval, timeFirstTouch, timeStart;
   bool isPlaying, canHold;
   std::unordered_map<SDL_Scancode, Uint64> timePrevKey;
   std::unordered_map<SDL_Scancode, bool> prevKeyboardState;

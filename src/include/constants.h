@@ -48,6 +48,9 @@
 #define FONTS_PATH  "./src/fonts/"
 
 // define colors
-#define COLOR_WHITE 255, 255, 255
+#define COLOR_BLACK  0,   0,   0
+#define COLOR_WHITE  255, 255, 255
+#define COLOR_GREEN  0,   255, 0
+#define COLOR_BLUE   0,   0,   255
 
 #endif  // constants_h_
