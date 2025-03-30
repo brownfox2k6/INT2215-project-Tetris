@@ -22,13 +22,13 @@ void Board::reset() {
   queue.clear();
   pushNewTetrominoSet();
   nextTetromino();
-  timeCur = SDL_GetTicks();
+  timeCur = timeStart = SDL_GetTicks();
   for (SDL_Scancode key : KEYS) {
     timePrevKey[key] = timeCur;
     prevKeyboardState[key] = false;
   }
   isPlaying = canHold = true;
-  timeFirstTouch = linesCleared = linesCount = 0;
+  timeFirstTouch = linesCleared = linesCount = score = 0;
   level = 1;
 }
 
@@ -258,6 +258,11 @@ void Board::attachToRenderer(
   // Display lines cleared
   writeText(renderer, std::to_string(linesCleared), fonts["consolab 24"],
             COLOR_WHITE, 83, 498, 120, 28);
+  // Display elapsed time
+  writeText(renderer, "ELAPSED TIME", fonts["consolab 20"], COLOR_BLACK, 570,
+            400, 170, 28);
+  writeText(renderer, convertMilisecToTimeString(timeCur - timeStart),
+            fonts["consolab 24"], COLOR_BLUE, 570, 428, 170, 28);
 }
 
 bool Board::softDrop() {

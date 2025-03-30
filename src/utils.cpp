@@ -3,6 +3,7 @@
 #include <SDL3_image/SDL_image.h>
 #include <SDL3_ttf/SDL_ttf.h>
 #include <board.hpp>
+#include <cassert>
 #include <constants.h>
 #include <cstdlib>
 #include <iostream>
@@ -71,6 +72,7 @@ void loadTexturesToRenderer(
 
 void loadFonts(std::unordered_map<std::string, TTF_Font *> &fonts) {
   fonts["consolab 24"] = TTF_OpenFont(FONTS_PATH "consolab.ttf", 24);
+  fonts["consolab 20"] = TTF_OpenFont(FONTS_PATH "consolab.ttf", 20);
 }
 
 void loadLogo(SDL_Window *window) {
@@ -89,4 +91,20 @@ void writeText(SDL_Renderer *renderer, std::string message, TTF_Font *font,
   int yy = y + (h - texture->h) / 2;
   attachTextureToRenderer(texture, renderer, xx, yy);
   SDL_DestroyTexture(texture);
+}
+
+std::string rjust(std::string s, int len, char pad) {
+  const int d = len - s.length();
+  assert(d >= 0);
+  return std::string(d, pad) + s;
+}
+
+std::string convertMilisecToTimeString(Uint64 ms) {
+  Uint64 m = ms / 60000;
+  ms -= m * 60000;
+  Uint64 s = ms / 1000;
+  ms -= s * 1000;
+  return rjust(std::to_string(m), 2, '0') + ':' +
+         rjust(std::to_string(s), 2, '0') + '.' +
+         rjust(std::to_string(ms), 3, '0');
 }

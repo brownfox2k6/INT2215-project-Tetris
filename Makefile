@@ -1,5 +1,5 @@
 source = main.cpp ./src/*.cpp
-output = Tetris_v5.exe
+output = Tetris_v6.exe
 
 INCLUDES = -Isrc/include
 LDFLAGS = -Lsrc/lib -lSDL3 -lSDL3_image -lSDL3_ttf
