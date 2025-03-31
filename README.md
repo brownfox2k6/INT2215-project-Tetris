@@ -3,7 +3,7 @@
 ## Thông tin về project
 - **Mô tả game:** [Wikipedia](https://vi.wikipedia.org/wiki/Tetris)
 - **Tác giả:** Nguyễn Trọng Đại - 24021400
-- **Ngôn ngữ lập trình:** C++20
+- **Ngôn ngữ lập trình:** C++17 trở lên
 - **Thư viện đồ hoạ:**
   - [SDL 3.2.8](https://github.com/libsdl-org/SDL/releases/tag/release-3.2.8)
   - [SDL_image 3.2.4](https://github.com/libsdl-org/SDL_image/releases/tag/release-3.2.4)
@@ -47,6 +47,11 @@ Sau mỗi level, tốc độ rơi của các Tetromino sẽ nhanh hơn (dữ li�
   - Phá được 2 hàng: 300 × level
   - Phá được 3 hàng: 500 × level
   - Phá được 4 hàng: 800 × level
+
+## Cấu hình biên dịch
+```
+g++ -std=c++17 main.cpp ./src/*.cpp -o Tetris.exe -Isrc/include -Lsrc/lib -lSDL3 -lSDL3_image -lSDL3_ttf
+```
 
 ## Nguồn tham khảo
 - Code mẫu tại [trang chủ của SDL](https://examples.libsdl.org/SDL3/)
