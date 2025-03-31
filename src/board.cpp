@@ -2,9 +2,11 @@
 #include <algorithm>
 #include <board.hpp>
 #include <constants.h>
+#include <iostream>
 #include <random.hpp>
 #include <string>
 #include <tetromino.hpp>
+#include <unordered_map>
 #include <utils.hpp>
 
 const SDL_Scancode KEYS[] = {SDL_SCANCODE_UP,    SDL_SCANCODE_RIGHT,
@@ -12,7 +14,16 @@ const SDL_Scancode KEYS[] = {SDL_SCANCODE_UP,    SDL_SCANCODE_RIGHT,
                              SDL_SCANCODE_SPACE, SDL_SCANCODE_C,
                              SDL_SCANCODE_X};
 
-Board::Board() { reset(); }
+Board::Board(SDL_Renderer *_renderer,
+             std::unordered_map<TextureType, SDL_Texture *> *_textures,
+             std::unordered_map<std::string, TTF_Font *> *_fonts,
+             std::unordered_map<std::string, Audio *> *_audios) {
+  renderer = _renderer;
+  textures = _textures;
+  fonts = _fonts;
+  audios = _audios;
+  reset();
+}
 
 void Board::reset() {
   for (int row = 0; row < ROWS; ++row) {
@@ -39,6 +50,7 @@ void Board::nextState() {
   if (keyboardState[SDL_SCANCODE_DOWN]) {
     if (timeCur - timePrevKey[SDL_SCANCODE_DOWN] > 50) {
       softDrop();
+      audios->at(AUDIO_MOVE)->playOverwrite();
       timePrevKey[SDL_SCANCODE_DOWN] = timeCur;
     }
   }
@@ -90,7 +102,28 @@ void Board::nextState() {
   } else {
     timeFirstTouch = 0;
   }
-  clearFullRows();
+  int cleared = clearFullRows();
+  if (cleared == 1) {
+    score += 100 * level;
+    audios->at(AUDIO_COLLAPSE)->playOverwrite();
+  } else if (cleared == 2) {
+    score += 300 * level;
+    audios->at(AUDIO_COLLAPSE)->playOverwrite();
+  } else if (cleared == 3) {
+    score += 500 * level;
+    audios->at(AUDIO_COLLAPSE)->playOverwrite();
+  } else if (cleared == 4) {
+    score += 800 * level;
+    audios->at(AUDIO_TETRIS)->playOverwrite();
+    std::cout << "This \n";
+  }
+  linesCleared += cleared;
+  linesCount += cleared;
+  if (linesCount >= 10) {
+    level = std::min(15, level + 1);
+    linesCount = 0;
+    audios->at(AUDIO_LEVEL_UP)->playOverwrite();
+  }
   if (isGameOver()) {
     reset();
   }
@@ -112,6 +145,7 @@ void Board::lockCurrent() {
   }
   canHold = true;
   timeFirstTouch = 0;
+  audios->at(AUDIO_LOCK)->playOverwrite();
 }
 
 void Board::pushNewTetrominoSet() {
@@ -141,6 +175,7 @@ void Board::holdCurrent() {
       current.getInitPos();
     }
     canHold = false;
+    audios->at(AUDIO_HOLD)->playOverwrite();
   }
 }
 
@@ -162,27 +197,20 @@ bool Board::isRowFull(int row) const {
 }
 
 int Board::clearFullRows() {
+  int next_free_row = ROWS - 1;
   int cleared = 0;
   for (int row = ROWS - 1; row >= 0; --row) {
-    if (isRowFull(row)) {
-      shiftRowsDown(row);
+    if (!isRowFull(row)) {
+      if (row != next_free_row) {
+        std::copy(matrix[row], matrix[row] + COLS, matrix[next_free_row]);
+      }
+      --next_free_row;
+    } else {
       ++cleared;
     }
   }
-  if (cleared == 1) {
-    score += 100 * level;
-  } else if (cleared == 2) {
-    score += 300 * level;
-  } else if (cleared == 3) {
-    score += 500 * level;
-  } else if (cleared == 4) {
-    score += 800 * level;
-  }
-  linesCleared += cleared;
-  linesCount += cleared;
-  if (linesCount >= 10) {
-    level = std::min(15, level + 1);
-    linesCount = 0;
+  for (int row = next_free_row; row >= 0; --row) {
+    clearRow(row);
   }
   return cleared;
 }
@@ -210,10 +238,7 @@ bool Board::isGameOver() const {
   return false;
 }
 
-void Board::attachToRenderer(
-    std::unordered_map<TextureType, SDL_Texture *> &textures,
-    std::unordered_map<std::string, TTF_Font *> &fonts,
-    SDL_Renderer *renderer) {
+void Board::attachToRenderer() {
   // Display the matrix
   int x = CELL_POS_X_INIT;
   int y = CELL_POS_Y_INIT;
@@ -227,7 +252,7 @@ void Board::attachToRenderer(
       } else {
         t = matrix[row][col];
       }
-      attachTextureToRenderer(textures[t], renderer, x, y);
+      attachTextureToRenderer(textures->at(t), renderer, x, y);
       x += CELL_POS_INCREMENT;
     }
     x = CELL_POS_X_INIT;
@@ -235,7 +260,7 @@ void Board::attachToRenderer(
   }
   // Display the hold tetromino
   if (hold != FREE) {
-    SDL_Texture *t = textures[WHOLE | hold];
+    SDL_Texture *t = textures->at(WHOLE | hold);
     const int _x = HOLD_POS_X + (BLOCK_WIDTH - t->w) / 2;
     const int _y = HOLD_POS_Y + (BLOCK_HEIGHT - t->h) / 2;
     attachTextureToRenderer(t, renderer, _x, _y);
@@ -243,26 +268,26 @@ void Board::attachToRenderer(
   // Display the queue
   y = QUEUE_POS_Y_INIT;
   for (int i = 0; i < 3; ++i) {
-    SDL_Texture *t = textures[WHOLE | queue[i]];
+    SDL_Texture *t = textures->at(WHOLE | queue[i]);
     const int _x = QUEUE_POS_X + (BLOCK_WIDTH - t->w) / 2;
     const int _y = y + (BLOCK_HEIGHT - t->h) / 2;
     attachTextureToRenderer(t, renderer, _x, _y);
     y += BLOCK_HEIGHT;
   }
   // Display score
-  writeText(renderer, std::to_string(score), fonts["consolab 24"], COLOR_WHITE,
+  writeText(renderer, std::to_string(score), fonts->at("consolab 24"), COLOR_WHITE,
             83, 378, 120, 28);
   // Display level
-  writeText(renderer, std::to_string(level), fonts["consolab 24"], COLOR_WHITE,
+  writeText(renderer, std::to_string(level), fonts->at("consolab 24"), COLOR_WHITE,
             83, 438, 120, 28);
   // Display lines cleared
-  writeText(renderer, std::to_string(linesCleared), fonts["consolab 24"],
+  writeText(renderer, std::to_string(linesCleared), fonts->at("consolab 24"),
             COLOR_WHITE, 83, 498, 120, 28);
   // Display elapsed time
-  writeText(renderer, "ELAPSED TIME", fonts["consolab 20"], COLOR_BLACK, 570,
+  writeText(renderer, "ELAPSED TIME", fonts->at("consolab 20"), COLOR_BLACK, 570,
             400, 170, 28);
   writeText(renderer, convertMilisecToTimeString(timeCur - timeStart),
-            fonts["consolab 24"], COLOR_BLUE, 570, 428, 170, 28);
+            fonts->at("consolab 24"), COLOR_BLUE, 570, 428, 170, 28);
 }
 
 bool Board::softDrop() {
@@ -280,10 +305,12 @@ bool Board::goHorizontal(int dy) {
   assert(abs(dy) == 1);
   for (const auto &[row, col] : current.pos) {
     if (isOccupied(row, col + dy)) {
+      audios->at(AUDIO_INPUT_FAILED)->playOverwrite();
       return false;
     }
   }
   current.dy += dy;
+  audios->at(AUDIO_MOVE)->playOverwrite();
   return true;
 }
 
@@ -352,9 +379,11 @@ bool Board::rotate(int d) {
       current.dir = dir;
       current.dx += dx;
       current.dy += dy;
+      audios->at(AUDIO_ROTATE)->playOverwrite();
       return true;
     }
   }
+  audios->at(AUDIO_INPUT_FAILED)->playOverwrite();
   return false;
 }
 
@@ -362,6 +391,7 @@ void Board::hardDrop() {
   current.pos = ghost.pos;
   lockCurrent();
   nextTetromino();
+  audios->at(AUDIO_HARD_DROP)->playOverwrite();
 }
 
 void Board::updatePos() {

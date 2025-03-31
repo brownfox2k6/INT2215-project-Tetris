@@ -3,8 +3,10 @@
 
 #include "SDL3_ttf/SDL_ttf.h"
 #include <SDL3/SDL.h>
+#include <audio.hpp>
 #include <string>
 #include <unordered_map>
+
 
 struct Coordinate {
   int x, y;
@@ -41,11 +43,15 @@ void attachTextureToRenderer(SDL_Texture *texture, SDL_Renderer *renderer,
 
 // load all textures to renderer
 void loadTexturesToRenderer(
-    std::unordered_map<TextureType, SDL_Texture *> &textures,
+    std::unordered_map<TextureType, SDL_Texture *> *textures,
     SDL_Renderer *renderer);
 
+// load audios used in this program
+void loadAudios(std::unordered_map<std::string, Audio *> *audios,
+                const SDL_AudioDeviceID &audioDevice);
+
 // load fonts used in this program
-void loadFonts(std::unordered_map<std::string, TTF_Font *> &fonts);
+void loadFonts(std::unordered_map<std::string, TTF_Font *> *fonts);
 
 // load program logo
 void loadLogo(SDL_Window *window);

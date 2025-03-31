@@ -5,6 +5,7 @@
 #include "SDL3/SDL_stdinc.h"
 #include <SDL3/SDL.h>
 #include <deque>
+#include <string>
 #include <tetromino.hpp>
 #include <unordered_map>
 #include <utils.hpp>
@@ -29,8 +30,15 @@ public:
   std::unordered_map<SDL_Scancode, Uint64> timePrevKey;
   std::unordered_map<SDL_Scancode, bool> prevKeyboardState;
   int level, linesCleared, linesCount, score;
+  SDL_Renderer *renderer;
+  std::unordered_map<TextureType, SDL_Texture *> *textures;
+  std::unordered_map<std::string, TTF_Font *> *fonts;
+  std::unordered_map<std::string, Audio *> *audios;
 
-  Board();
+  Board(SDL_Renderer *renderer,
+        std::unordered_map<TextureType, SDL_Texture *> *textures,
+        std::unordered_map<std::string, TTF_Font *> *fonts,
+        std::unordered_map<std::string, Audio *> *audios);
 
   // Resets the board to an empty state
   void reset();
@@ -77,10 +85,7 @@ public:
   bool isGameOver() const;
 
   // attach board to the Renderer
-  void
-  attachToRenderer(std::unordered_map<TextureType, SDL_Texture *> &textures,
-                   std::unordered_map<std::string, TTF_Font *> &fonts,
-                   SDL_Renderer *renderer);
+  void attachToRenderer();
 
   // make the current tetromino one step down
   // return true if it can go down, false otherwise

@@ -47,6 +47,24 @@
 // path to fonts
 #define FONTS_PATH  "./src/fonts/"
 
+// path to audios
+#define AUDIOS_PATH         "./src/audios/"
+#define AUDIO_BGM_1         "Korobeiniki-BR-01.wav"
+#define AUDIO_BGM_2         "Korobeiniki-CN-01.wav"
+#define AUDIO_BGM_3         "Korobeiniki-FVR-01.wav"
+#define AUDIO_BACK_TO_BACK  "backToBackTetris.wav"
+#define AUDIO_COLLAPSE      "collapse.wav"
+#define AUDIO_HARD_DROP     "hardDrop.wav"
+#define AUDIO_HOLD          "hold.wav"
+#define AUDIO_INPUT_FAILED  "inputFailed.wav"
+#define AUDIO_LEVEL_UP      "levelUp.wav"
+#define AUDIO_LINE_CLEAR    "lineClear.wav"
+#define AUDIO_LOCK          "lock.wav"
+#define AUDIO_MOVE          "move.wav"
+#define AUDIO_ROTATE        "rotate.wav"
+#define AUDIO_TETRIS        "tetris.wav"
+#define AUDIO_WIN           "win.wav"
+
 // define colors
 #define COLOR_BLACK  0,   0,   0
 #define COLOR_WHITE  255, 255, 255
