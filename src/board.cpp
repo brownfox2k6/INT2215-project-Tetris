@@ -115,7 +115,6 @@ void Board::nextState() {
   } else if (cleared == 4) {
     score += 800 * level;
     audios->at(AUDIO_TETRIS)->playOverwrite();
-    std::cout << "This \n";
   }
   linesCleared += cleared;
   linesCount += cleared;
@@ -166,17 +165,19 @@ TextureType Board::getFromQueue() {
 }
 
 void Board::holdCurrent() {
-  if (canHold) {
-    if (hold == FREE) {
-      hold = current.shape;
-      nextTetromino();
-    } else {
-      std::swap(hold, current.shape);
-      current.getInitPos();
-    }
-    canHold = false;
-    audios->at(AUDIO_HOLD)->playOverwrite();
+  if (!canHold) {
+    audios->at(AUDIO_INPUT_FAILED)->playOverwrite();
+    return;
   }
+  if (hold == FREE) {
+    hold = current.shape;
+    nextTetromino();
+  } else {
+    std::swap(hold, current.shape);
+    current.getInitPos();
+  }
+  canHold = false;
+  audios->at(AUDIO_HOLD)->playOverwrite();
 }
 
 bool Board::isWithinBounds(int row, int col) const {
@@ -231,6 +232,7 @@ bool Board::isGameOver() const {
   for (int row = 0; row < HIDDEN_ROWS; ++row) {
     for (const TextureType &cell : matrix[row]) {
       if (cell != FREE) {
+        audios->at(AUDIO_BLOCKOUT)->play();
         return true;
       }
     }

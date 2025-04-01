@@ -73,11 +73,11 @@ void loadTexturesToRenderer(
 
 void loadAudios(std::unordered_map<std::string, Audio *> *audios,
                 const SDL_AudioDeviceID &audioDevice) {
-  std::string list[] = {AUDIO_BGM_1,        AUDIO_BGM_2,        AUDIO_BGM_3,
-                        AUDIO_BACK_TO_BACK, AUDIO_COLLAPSE,     AUDIO_HARD_DROP,
-                        AUDIO_HOLD,         AUDIO_INPUT_FAILED, AUDIO_LEVEL_UP,
-                        AUDIO_LINE_CLEAR,   AUDIO_LOCK,         AUDIO_MOVE,
-                        AUDIO_ROTATE,       AUDIO_TETRIS,       AUDIO_WIN};
+  std::string list[] = {
+      AUDIO_BGM_1,        AUDIO_BGM_2,    AUDIO_BGM_3,      AUDIO_BACK_TO_BACK,
+      AUDIO_BLOCKOUT,     AUDIO_COLLAPSE, AUDIO_HARD_DROP,  AUDIO_HOLD,
+      AUDIO_INPUT_FAILED, AUDIO_LEVEL_UP, AUDIO_LINE_CLEAR, AUDIO_LOCK,
+      AUDIO_MOVE,         AUDIO_ROTATE,   AUDIO_TETRIS,     AUDIO_WIN};
   for (std::string &file : list) {
     (*audios)[file] = new Audio(file, audioDevice);
   }
