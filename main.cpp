@@ -1,20 +1,15 @@
-#include "SDL3/SDL_audio.h"
-#include "SDL3/SDL_init.h"
-#include "SDL3/SDL_render.h"
-#include "SDL3_ttf/SDL_ttf.h"
-#include "audio.hpp"
-// #include "sdl2_mixer/SDL_mixer.h"
-#include <string>
-#include <unordered_map>
 #define SDL_MAIN_USE_CALLBACKS // use the callbacks instead of main()
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 #include <SDL3_image/SDL_image.h>
+#include <SDL3_ttf/SDL_ttf.h>
 #include <board.hpp>
 #include <constants.h>
-#include <iostream>
 #include <random.hpp>
 #include <utils.hpp>
+#include <audio.hpp>
+#include <string>
+#include <unordered_map>
 
 SDL_Window *window;
 SDL_Renderer *renderer;
@@ -22,6 +17,7 @@ SDL_AudioDeviceID audioDevice;
 std::unordered_map<TextureType, SDL_Texture *> *textures;
 std::unordered_map<std::string, TTF_Font *> *fonts;
 std::unordered_map<std::string, Audio *> *audios;
+Audio *bgm;
 Board *board;
 
 // This function runs once at startup.
@@ -49,6 +45,8 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
   loadFonts(fonts);
   loadLogo(window);
   loadAudios(audios, audioDevice);
+  std::vector<std::string> listBgm = {AUDIO_BGM_1, AUDIO_BGM_2, AUDIO_BGM_3};
+  bgm = audios->at(randElement(listBgm));
   board = new Board(renderer, textures, fonts, audios);
   return SDL_APP_CONTINUE;
 }
@@ -71,7 +69,7 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
   board->nextState();
   board->attachToRenderer();
   SDL_RenderPresent(renderer);
-  audios->at(AUDIO_BGM_2)->play();
+  bgm->play();
   return SDL_APP_CONTINUE;
 }
 
