@@ -52,6 +52,7 @@
 #define AUDIO_BGM_1         "Korobeiniki-BR-01.wav"
 #define AUDIO_BGM_2         "Korobeiniki-CN-01.wav"
 #define AUDIO_BGM_3         "Korobeiniki-FVR-01.wav"
+#define AUDIO_BLOCKOUT      "blockout.wav"
 #define AUDIO_BACK_TO_BACK  "backToBackTetris.wav"
 #define AUDIO_COLLAPSE      "collapse.wav"
 #define AUDIO_HARD_DROP     "hardDrop.wav"

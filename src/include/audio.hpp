@@ -1,7 +1,7 @@
 #ifndef audio_hpp_
 #define audio_hpp_
 
-#include "SDL3/SDL_audio.h"
+#include <SDL3/SDL.h>
 #include <string>
 
 class Audio {
