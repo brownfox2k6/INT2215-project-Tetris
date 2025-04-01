@@ -1,11 +1,10 @@
 #include <SDL3_ttf/SDL_ttf.h>
-#include <algorithm>
-#include <board.hpp>
 #include <constants.h>
-#include <iostream>
+#include <board.hpp>
 #include <random.hpp>
-#include <string>
 #include <tetromino.hpp>
+#include <algorithm>
+#include <string>
 #include <unordered_map>
 #include <utils.hpp>
 
@@ -277,17 +276,17 @@ void Board::attachToRenderer() {
     y += BLOCK_HEIGHT;
   }
   // Display score
-  writeText(renderer, std::to_string(score), fonts->at("consolab 24"), COLOR_WHITE,
-            83, 378, 120, 28);
+  writeText(renderer, std::to_string(score), fonts->at("consolab 24"),
+            COLOR_WHITE, 83, 378, 120, 28);
   // Display level
-  writeText(renderer, std::to_string(level), fonts->at("consolab 24"), COLOR_WHITE,
-            83, 438, 120, 28);
+  writeText(renderer, std::to_string(level), fonts->at("consolab 24"),
+            COLOR_WHITE, 83, 438, 120, 28);
   // Display lines cleared
   writeText(renderer, std::to_string(linesCleared), fonts->at("consolab 24"),
             COLOR_WHITE, 83, 498, 120, 28);
   // Display elapsed time
-  writeText(renderer, "ELAPSED TIME", fonts->at("consolab 20"), COLOR_BLACK, 570,
-            400, 170, 28);
+  writeText(renderer, "ELAPSED TIME", fonts->at("consolab 20"), COLOR_BLACK,
+            570, 400, 170, 28);
   writeText(renderer, convertMilisecToTimeString(timeCur - timeStart),
             fonts->at("consolab 24"), COLOR_BLUE, 570, 428, 170, 28);
 }

@@ -1,8 +1,5 @@
-#include "SDL3/SDL_audio.h"
-#include "constants.h"
-#include <SDL3/SDL.h>
 #include <audio.hpp>
-#include <iostream>
+#include "constants.h"
 
 Audio::Audio(std::string filePath, const SDL_AudioDeviceID &audio_device) {
   SDL_AudioSpec spec;

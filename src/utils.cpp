@@ -1,15 +1,14 @@
-#include "SDL3/SDL_audio.h"
-#include "audio.hpp"
+#include <SDL3/SDL_audio.h>
 #include <SDL3_image/SDL_image.h>
 #include <SDL3_ttf/SDL_ttf.h>
-#include <board.hpp>
-#include <cassert>
 #include <constants.h>
+#include <audio.hpp>
+#include <board.hpp>
+#include <utils.hpp>
+#include <cassert>
 #include <cstdlib>
-#include <iostream>
 #include <string>
 #include <unordered_map>
-#include <utils.hpp>
 
 TextureType operator|(TextureType a, TextureType b) {
   return static_cast<TextureType>(static_cast<int>(a) | static_cast<int>(b));
