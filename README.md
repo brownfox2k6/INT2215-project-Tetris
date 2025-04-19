@@ -56,5 +56,5 @@ g++ -std=c++17 main.cpp ./src/*.cpp -o Tetris.exe -mwindows -Isrc/include -Lsrc/
 ## Nguồn tham khảo
 - Code mẫu tại [trang chủ của SDL](https://examples.libsdl.org/SDL3/)
 - Cơ chế xoay Tetromino: [Super Rotation System](https://tetris.wiki/Super_Rotation_System)
-- Tất cả file ảnh ở [đây](src/images) được lấy từ [web chơi Tetris online](https://tetris.com/play-tetris/)
+- Tất cả file ảnh ở [đây](src/images) và audio ở [đây](src/audios) được lấy từ [web chơi Tetris online](https://tetris.com/play-tetris/)
 - ⚠️ Ngoài ra, cam kết **không** sử dụng code ở những nguồn không được liệt kê ở trên
