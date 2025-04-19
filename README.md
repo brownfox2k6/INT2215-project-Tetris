@@ -50,7 +50,7 @@ Sau mỗi level, tốc độ rơi của các Tetromino sẽ nhanh hơn (dữ li�
 
 ## Cấu hình biên dịch
 ```
-g++ -std=c++17 main.cpp ./src/*.cpp -o Tetris.exe -Isrc/include -Lsrc/lib -lSDL3 -lSDL3_image -lSDL3_ttf
+g++ -std=c++17 main.cpp ./src/*.cpp -o Tetris.exe -mwindows -Isrc/include -Lsrc/lib -lSDL3 -lSDL3_image -lSDL3_ttf
 ```
 
 ## Nguồn tham khảo
