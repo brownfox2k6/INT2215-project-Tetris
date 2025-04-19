@@ -3,6 +3,7 @@
 
 #include "SDL3/SDL_scancode.h"
 #include "SDL3/SDL_stdinc.h"
+#include "timer.hpp"
 #include <SDL3/SDL.h>
 #include <deque>
 #include <string>
@@ -25,8 +26,9 @@ public:
   std::deque<TextureType> queue;
   Tetromino current, ghost;
   TextureType hold;
-  Uint64 timeCur, timeInterval, timeFirstTouch, timeStart;
+  Uint64 timeInterval, timeFirstTouch;
   bool isPlaying, canHold;
+  Timer timer;
   std::unordered_map<SDL_Scancode, Uint64> timePrevKey;
   std::unordered_map<SDL_Scancode, bool> prevKeyboardState;
   int level, linesCleared, linesCount, score;
@@ -80,9 +82,9 @@ public:
   // Shift all rows from specific start_row down by one row
   void shiftRowsDown(int start_row);
 
-  // Checks if the game is over
-  // (if any hidden rows contains any block)
-  bool isGameOver() const;
+  // Checks if the game is over (if any hidden rows contains any block)
+  // if it's over, plays gameover sound and pause the timer
+  bool isGameOver();
 
   // attach board to the Renderer
   void attachToRenderer();
@@ -110,6 +112,9 @@ public:
 
   // update position of current tetromino and its ghost
   void updatePos();
+
+  // write stats to the renderer while in wait screen (paused, game over)
+  void writeStats();
 };
 
 #endif // board_hpp_

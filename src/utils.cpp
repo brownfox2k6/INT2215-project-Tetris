@@ -1,14 +1,14 @@
 #include <SDL3/SDL_audio.h>
 #include <SDL3_image/SDL_image.h>
 #include <SDL3_ttf/SDL_ttf.h>
-#include <constants.h>
 #include <audio.hpp>
 #include <board.hpp>
-#include <utils.hpp>
 #include <cassert>
+#include <constants.h>
 #include <cstdlib>
 #include <string>
 #include <unordered_map>
+#include <utils.hpp>
 
 TextureType operator|(TextureType a, TextureType b) {
   return static_cast<TextureType>(static_cast<int>(a) | static_cast<int>(b));
@@ -85,6 +85,9 @@ void loadAudios(std::unordered_map<std::string, Audio *> *audios,
 void loadFonts(std::unordered_map<std::string, TTF_Font *> *fonts) {
   (*fonts)["consolab 24"] = TTF_OpenFont(FONTS_PATH "consolab.ttf", 24);
   (*fonts)["consolab 20"] = TTF_OpenFont(FONTS_PATH "consolab.ttf", 20);
+  (*fonts)["consolab 32"] = TTF_OpenFont(FONTS_PATH "consolab.ttf", 32);
+  (*fonts)["consolab 40"] = TTF_OpenFont(FONTS_PATH "consolab.ttf", 40);
+  (*fonts)["consolab 100"] = TTF_OpenFont(FONTS_PATH "consolab.ttf", 100);
 }
 
 void loadLogo(SDL_Window *window) {

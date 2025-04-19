@@ -1,5 +1,6 @@
-#include <random.hpp>
 #include <cassert>
+#include <random.hpp>
+
 
 int randInt(int lo, int hi) {
   assert(lo <= hi);

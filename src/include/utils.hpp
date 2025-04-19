@@ -7,7 +7,6 @@
 #include <string>
 #include <unordered_map>
 
-
 struct Coordinate {
   int x, y;
   Coordinate(int _x, int _y) {

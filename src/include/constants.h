@@ -71,5 +71,7 @@
 #define COLOR_WHITE  255, 255, 255
 #define COLOR_GREEN  0,   255, 0
 #define COLOR_BLUE   0,   0,   255
+#define COLOR_YELLOW 255, 255, 0
+#define COLOR_RED    255, 0,   0
 
 #endif  // constants_h_

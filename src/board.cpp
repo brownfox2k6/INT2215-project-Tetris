@@ -1,10 +1,10 @@
 #include <SDL3_ttf/SDL_ttf.h>
-#include <constants.h>
-#include <board.hpp>
-#include <random.hpp>
-#include <tetromino.hpp>
 #include <algorithm>
+#include <board.hpp>
+#include <constants.h>
+#include <random.hpp>
 #include <string>
+#include <tetromino.hpp>
 #include <unordered_map>
 #include <utils.hpp>
 
@@ -32,9 +32,9 @@ void Board::reset() {
   queue.clear();
   pushNewTetrominoSet();
   nextTetromino();
-  timeCur = timeStart = SDL_GetTicks();
+  timer.reset();
   for (SDL_Scancode key : KEYS) {
-    timePrevKey[key] = timeCur;
+    timePrevKey[key] = timer.getTicks();
     prevKeyboardState[key] = false;
   }
   isPlaying = canHold = true;
@@ -43,36 +43,36 @@ void Board::reset() {
 }
 
 void Board::nextState() {
-  updatePos();
-  timeCur = SDL_GetTicks();
   const bool *keyboardState = SDL_GetKeyboardState(NULL);
   if (keyboardState[SDL_SCANCODE_DOWN]) {
-    if (timeCur - timePrevKey[SDL_SCANCODE_DOWN] > 50) {
+    if (timer.getTicks() - timePrevKey[SDL_SCANCODE_DOWN] > 50) {
       softDrop();
       audios->at(AUDIO_MOVE)->playOverwrite();
-      timePrevKey[SDL_SCANCODE_DOWN] = timeCur;
+      timePrevKey[SDL_SCANCODE_DOWN] = timer.getTicks();
     }
   }
   if (keyboardState[SDL_SCANCODE_LEFT]) {
     if (!prevKeyboardState[SDL_SCANCODE_LEFT]) {
       goHorizontal(-1);
       timeInterval = 150;
-      timePrevKey[SDL_SCANCODE_LEFT] = timeCur;
-    } else if (timeCur - timePrevKey[SDL_SCANCODE_LEFT] > timeInterval) {
+      timePrevKey[SDL_SCANCODE_LEFT] = timer.getTicks();
+    } else if (timer.getTicks() - timePrevKey[SDL_SCANCODE_LEFT] >
+               timeInterval) {
       goHorizontal(-1);
       timeInterval = 50;
-      timePrevKey[SDL_SCANCODE_LEFT] = timeCur;
+      timePrevKey[SDL_SCANCODE_LEFT] = timer.getTicks();
     }
   }
   if (keyboardState[SDL_SCANCODE_RIGHT]) {
     if (!prevKeyboardState[SDL_SCANCODE_RIGHT]) {
       goHorizontal(1);
       timeInterval = 150;
-      timePrevKey[SDL_SCANCODE_RIGHT] = timeCur;
-    } else if (timeCur - timePrevKey[SDL_SCANCODE_RIGHT] > timeInterval) {
+      timePrevKey[SDL_SCANCODE_RIGHT] = timer.getTicks();
+    } else if (timer.getTicks() - timePrevKey[SDL_SCANCODE_RIGHT] >
+               timeInterval) {
       goHorizontal(1);
       timeInterval = 50;
-      timePrevKey[SDL_SCANCODE_RIGHT] = timeCur;
+      timePrevKey[SDL_SCANCODE_RIGHT] = timer.getTicks();
     }
   }
   if (keyboardState[SDL_SCANCODE_UP] && !prevKeyboardState[SDL_SCANCODE_UP]) {
@@ -88,13 +88,14 @@ void Board::nextState() {
   if (keyboardState[SDL_SCANCODE_C] && !prevKeyboardState[SDL_SCANCODE_C]) {
     holdCurrent();
   }
-  if (timeCur - timePrevKey[SDL_SCANCODE_DOWN] > autoDropInterval[level]) {
+  if (timer.getTicks() - timePrevKey[SDL_SCANCODE_DOWN] >
+      autoDropInterval[level]) {
     softDrop();
   }
   if (ghost.pos == current.pos) {
     if (timeFirstTouch == 0) {
-      timeFirstTouch = timeCur;
-    } else if (timeCur - timeFirstTouch > 1000) {
+      timeFirstTouch = timer.getTicks();
+    } else if (timer.getTicks() - timeFirstTouch > 1000) {
       lockCurrent();
       nextTetromino();
     }
@@ -122,12 +123,10 @@ void Board::nextState() {
     linesCount = 0;
     audios->at(AUDIO_LEVEL_UP)->playOverwrite();
   }
-  if (isGameOver()) {
-    reset();
-  }
   for (SDL_Scancode key : KEYS) {
     prevKeyboardState[key] = keyboardState[key];
   }
+  updatePos();
 }
 
 void Board::nextTetromino() {
@@ -227,11 +226,12 @@ void Board::shiftRowsDown(int start_row) {
   }
 }
 
-bool Board::isGameOver() const {
+bool Board::isGameOver() {
   for (int row = 0; row < HIDDEN_ROWS; ++row) {
     for (const TextureType &cell : matrix[row]) {
       if (cell != FREE) {
         audios->at(AUDIO_BLOCKOUT)->play();
+        timer.pause();
         return true;
       }
     }
@@ -275,20 +275,9 @@ void Board::attachToRenderer() {
     attachTextureToRenderer(t, renderer, _x, _y);
     y += BLOCK_HEIGHT;
   }
-  // Display score
-  writeText(renderer, std::to_string(score), fonts->at("consolab 24"),
-            COLOR_WHITE, 83, 378, 120, 28);
-  // Display level
-  writeText(renderer, std::to_string(level), fonts->at("consolab 24"),
-            COLOR_WHITE, 83, 438, 120, 28);
-  // Display lines cleared
-  writeText(renderer, std::to_string(linesCleared), fonts->at("consolab 24"),
-            COLOR_WHITE, 83, 498, 120, 28);
-  // Display elapsed time
-  writeText(renderer, "ELAPSED TIME", fonts->at("consolab 20"), COLOR_BLACK,
-            570, 400, 170, 28);
-  writeText(renderer, convertMilisecToTimeString(timeCur - timeStart),
-            fonts->at("consolab 24"), COLOR_BLUE, 570, 428, 170, 28);
+  // Pause instruction
+  writeText(renderer, "[P] = pause", fonts->at("consolab 20"), COLOR_RED, 570,
+            500, 170, 28);
 }
 
 bool Board::softDrop() {
@@ -298,7 +287,7 @@ bool Board::softDrop() {
     }
   }
   ++current.dx;
-  timePrevKey[SDL_SCANCODE_DOWN] = timeCur;
+  timePrevKey[SDL_SCANCODE_DOWN] = timer.getTicks();
   return true;
 }
 
@@ -415,4 +404,21 @@ void Board::updatePos() {
   for (const auto &[row, col] : current.pos) {
     ghost.pos.emplace_back(row + can, col);
   }
+}
+
+void Board::writeStats() {
+  // Display score
+  writeText(renderer, std::to_string(score), fonts->at("consolab 24"),
+            COLOR_WHITE, 83, 378, 120, 28);
+  // Display level
+  writeText(renderer, std::to_string(level), fonts->at("consolab 24"),
+            COLOR_WHITE, 83, 438, 120, 28);
+  // Display lines cleared
+  writeText(renderer, std::to_string(linesCleared), fonts->at("consolab 24"),
+            COLOR_WHITE, 83, 498, 120, 28);
+  // Display elapsed time
+  writeText(renderer, "ELAPSED TIME", fonts->at("consolab 20"), COLOR_BLACK,
+            570, 400, 170, 28);
+  writeText(renderer, convertMilisecToTimeString(timer.getTicks()),
+            fonts->at("consolab 24"), COLOR_BLUE, 570, 428, 170, 28);
 }

@@ -9,11 +9,14 @@ private:
   Uint8 *wav_data;
   Uint32 wav_data_len;
   SDL_AudioStream *stream;
-
+  const SDL_AudioDeviceID audioDevice;
 public:
   Audio(std::string filePath, const SDL_AudioDeviceID &audio_device);
   ~Audio();
   void play();
+  void pause();
+  void resume();
+  void clear();
   void playOverwrite();
 };
 
