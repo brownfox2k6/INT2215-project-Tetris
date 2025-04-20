@@ -69,6 +69,9 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
         if (gameState == GAMEOVER) {
           board->reset();
         }
+        if (gameState != PAUSED) {
+          lastGameState = gameState;
+        }
         gameState = COUNTDOWN;
         countdownTimer.reset();
         countdownTimer.start();
