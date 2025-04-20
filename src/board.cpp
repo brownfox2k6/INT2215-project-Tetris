@@ -95,7 +95,7 @@ void Board::nextState() {
   if (ghost.pos == current.pos) {
     if (timeFirstTouch == 0) {
       timeFirstTouch = timer.getTicks();
-    } else if (timer.getTicks() - timeFirstTouch > 1000) {
+    } else if (timer.getTicks() - timeFirstTouch > 2000) {
       lockCurrent();
       nextTetromino();
     }
@@ -276,8 +276,8 @@ void Board::attachToRenderer() {
     y += BLOCK_HEIGHT;
   }
   // Pause instruction
-  writeText(renderer, "[P] = pause", fonts->at("consolab 20"), COLOR_RED, 570,
-            500, 170, 28);
+  writeText(renderer, "[P] = pause", fonts->at("consolab 24"), COLOR_RED, 570,
+            550, 170, 28);
 }
 
 bool Board::softDrop() {
@@ -417,8 +417,8 @@ void Board::writeStats() {
   writeText(renderer, std::to_string(linesCleared), fonts->at("consolab 24"),
             COLOR_WHITE, 83, 498, 120, 28);
   // Display elapsed time
-  writeText(renderer, "ELAPSED TIME", fonts->at("consolab 20"), COLOR_BLACK,
-            570, 400, 170, 28);
+  writeText(renderer, "ELAPSED TIME", fonts->at("consolab 24"), COLOR_BLACK,
+            570, 397, 170, 28);
   writeText(renderer, convertMilisecToTimeString(timer.getTicks()),
-            fonts->at("consolab 24"), COLOR_BLUE, 570, 428, 170, 28);
+            fonts->at("consolab 32"), COLOR_BLUE, 570, 432, 170, 32);
 }
