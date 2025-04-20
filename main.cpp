@@ -19,8 +19,7 @@ std::unordered_map<std::string, TTF_Font *> *fonts;
 std::unordered_map<std::string, Audio *> *audios;
 Audio *bgm;
 Board *board;
-enum gameState { INTRO, PLAYING, GAMEOVER, PAUSED, COUNTDOWN };
-gameState gameState, lastGameState;
+enum { INTRO, PLAYING, GAMEOVER, PAUSED, COUNTDOWN } gameState, lastGameState;
 Timer countdownTimer;
 
 // This function runs once at startup.
@@ -70,11 +69,11 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
         if (gameState == GAMEOVER) {
           board->reset();
         }
-        lastGameState = gameState;
         gameState = COUNTDOWN;
         countdownTimer.reset();
         countdownTimer.start();
       } else if (gameState == PLAYING) {
+        lastGameState = PLAYING;
         gameState = PAUSED;
         board->timer.pause();
         bgm->pause();
@@ -122,7 +121,7 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     } else {
       writeText(renderer, "The game is", fonts->at("consolab 32"), COLOR_YELLOW,
                 0, 0, 800, 300);
-      std::string t = lastGameState == PLAYING ? "resume" : "start";
+      std::string t = (lastGameState == PLAYING) ? "resume" : "start";
       writeText(renderer, "about to " + t, fonts->at("consolab 32"),
                 COLOR_YELLOW, 0, 40, 800, 300);
       writeText(renderer, std::to_string(countdownSeconds),
