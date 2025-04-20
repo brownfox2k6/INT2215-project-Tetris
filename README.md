@@ -10,15 +10,16 @@
   - [SDL_ttf 3.2.0](https://github.com/libsdl-org/SDL_ttf/releases/tag/release-3.2.0)
 
 ## Các phím bấm
-|   Key   | Action       |
-|:-------:| ------------ |
-|   `←`   | Move left    |
-|   `→`   | Move right   |
-|   `↓`   | Soft drop    |
-| `Space` | Hard drop    |
-|   `↑`   | Rotate right |
-|   `X`   | Rotate left  |
-|   `C`   | Hold         |
+|   Key   | Action                  |
+|:-------:| ----------------------- |
+|   `←`   | Move left               |
+|   `→`   | Move right              |
+|   `↓`   | Soft drop               |
+| `Space` | Hard drop               |
+|   `↑`   | Rotate right            |
+|   `X`   | Rotate left             |
+|   `C`   | Hold                    |
+|   `P`   | Pause/Resume/Start game |
 
 ## Tốc độ rơi tự động
 Sau mỗi level, tốc độ rơi của các Tetromino sẽ nhanh hơn (dữ liệu lấy từ ChatGPT)
