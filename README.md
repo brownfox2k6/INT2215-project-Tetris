@@ -53,6 +53,44 @@ Sau mỗi level, tốc độ rơi của các Tetromino sẽ nhanh hơn (dữ li�
 g++ -std=c++17 main.cpp ./src/*.cpp -o Tetris.exe -mwindows -Isrc/include -Lsrc/lib -lSDL3 -lSDL3_image -lSDL3_ttf
 ```
 
+## Một số hình ảnh của game
+
+<details><summary>Khi vừa mở game</summary>
+  
+  ![image](https://github.com/user-attachments/assets/8e010ca0-8a9f-4985-aa24-8e55be7b4c7d)
+</details>
+
+<details><summary>Trong thời gian chờ bắt đầu game</summary>
+  
+  ![image](https://github.com/user-attachments/assets/0cad485a-1a9e-439e-9096-b07725e9f47d)
+</details>
+
+<details><summary>Khi chơi - Tetromino đang rơi</summary>
+  
+  ![image](https://github.com/user-attachments/assets/38d74b86-d78f-40e2-b195-5b003a797444)
+</details>
+
+<details><summary>Khi chơi - Tetromino đang chạm đáy</summary>
+  
+  ![image](https://github.com/user-attachments/assets/36343149-505c-41e8-ac2a-413db2816514)
+</details>
+
+<details><summary>Tạm dừng</summary>
+  
+  ![image](https://github.com/user-attachments/assets/ae4ce8af-6a87-45d6-80b8-1e570336f592)
+</details>
+
+<details><summary>Trong thời gian chờ tiếp tục game</summary>
+  
+  ![image](https://github.com/user-attachments/assets/d19a5a33-1e40-45ef-97cd-a7f92927e5ae)
+</details>
+
+<details><summary>Game over</summary>
+  
+  ![image](https://github.com/user-attachments/assets/0f0bc50b-68cf-45dd-a785-f7a40c67b9ff)
+</details>
+
+
 ## Nguồn tham khảo
 - Code mẫu tại [trang chủ của SDL](https://examples.libsdl.org/SDL3/)
 - Cơ chế xoay Tetromino: [Super Rotation System](https://tetris.wiki/Super_Rotation_System)
