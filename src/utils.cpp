@@ -6,9 +6,12 @@
 #include <cassert>
 #include <constants.h>
 #include <cstdlib>
+#include <random.hpp>
 #include <string>
 #include <unordered_map>
 #include <utils.hpp>
+
+float DISPLAY_SCALE = 1;
 
 TextureType operator|(TextureType a, TextureType b) {
   return static_cast<TextureType>(static_cast<int>(a) | static_cast<int>(b));
@@ -123,3 +126,5 @@ std::string convertMilisecToTimeString(Uint64 ms) {
          rjust(std::to_string(s), 2, '0') + '.' +
          rjust(std::to_string(ms), 3, '0');
 }
+
+void changeDisplayScale(float f) { DISPLAY_SCALE = f; }

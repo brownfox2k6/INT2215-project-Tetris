@@ -32,12 +32,13 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
     SDL_Log("Couldn't initialize SDL: %s", SDL_GetError());
     return SDL_APP_FAILURE;
   }
-  if (!SDL_CreateWindowAndRenderer(WINDOW_TITLE, WINDOW_WIDTH * DISPLAY_SCALE,
-                                   WINDOW_HEIGHT * DISPLAY_SCALE, 0, &window,
-                                   &renderer)) {
+  if (!SDL_CreateWindowAndRenderer(WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT, 0,
+                                   &window, &renderer)) {
     SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
     return SDL_APP_FAILURE;
   }
+  SDL_SetWindowResizable(window, true);
+  SDL_SetWindowAspectRatio(window, 1.3333333, 1.3333333);
   audioDevice = SDL_OpenAudioDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, NULL);
   if (audioDevice == 0) {
     SDL_Log("Couldn't open audio device: %s", SDL_GetError());
@@ -58,6 +59,10 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
   if (event->type == SDL_EVENT_QUIT) {
     return SDL_APP_SUCCESS;
+  }
+  if (event->type == SDL_EVENT_WINDOW_RESIZED) {
+    changeDisplayScale(1.0 * event->window.data1 / WINDOW_WIDTH);
+    return SDL_APP_CONTINUE;
   }
   if (event->type == SDL_EVENT_KEY_DOWN) {
     if (event->key.scancode == SDL_SCANCODE_P) {
@@ -99,6 +104,9 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     if (board->isGameOver()) {
       gameState = GAMEOVER;
       bgm->clear();
+      std::vector<std::string> listBgm = {AUDIO_BGM_1, AUDIO_BGM_2,
+                                          AUDIO_BGM_3};
+      bgm = audios->at(randElement(listBgm));
     }
   } else if (gameState == PAUSED) {
     writeText(renderer, "GAME PAUSED", fonts->at("consolab 40"), COLOR_YELLOW,

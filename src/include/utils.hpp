@@ -65,4 +65,7 @@ std::string rjust(std::string s, int len, char pad);
 // convert milisec to time string (format: <minutes>:<seconds>.<miliseconds>)
 std::string convertMilisecToTimeString(Uint64 ms);
 
+// change display scale to a specific value
+void changeDisplayScale(float f);
+
 #endif // utils_hpp_
