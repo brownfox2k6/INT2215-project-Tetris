@@ -1,7 +1,7 @@
 # Thông tin về project
 ## Tác giả
 - **Họ tên:** Nguyễn Trọng Đại
-- **Lớp khoá học:** QH-2024-I-CQ/I-CS4
+- **Lớp khoá học:** QH-2024-I/CQ-I-CS4
 - **Mã sinh viên:** 24021400
 
 ## Ngôn ngữ lập trình và phiên bản
