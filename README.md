@@ -1,4 +1,5 @@
 # Thông tin về project
+[Video demo game](https://youtu.be/FZnFTIYFcQo)
 ## Tác giả
 - **Họ tên:** Nguyễn Trọng Đại
 - **Lớp khoá học:** QH-2024-I/CQ-I-CS4
