@@ -1,4 +1,4 @@
-Đây là bản tiếng Việt, [README tiếng anh](/README_en.md)
+This is Vietnamese version. [README in English](/README_en.md)
 
 # Thông tin về project
 [Video demo game](https://youtu.be/FZnFTIYFcQo)
