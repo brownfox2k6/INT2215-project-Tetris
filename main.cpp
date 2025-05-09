@@ -37,7 +37,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
     return SDL_APP_FAILURE;
   }
   SDL_SetWindowResizable(window, true);
-  SDL_SetWindowAspectRatio(window, 1.3333333, 1.3333333);
+  SDL_SetWindowAspectRatio(window, WINDOW_ASPECT_RATIO, WINDOW_ASPECT_RATIO);
   audioDevice = SDL_OpenAudioDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, NULL);
   if (audioDevice == 0) {
     SDL_Log("Couldn't open audio device: %s", SDL_GetError());

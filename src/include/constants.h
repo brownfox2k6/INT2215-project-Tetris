@@ -3,8 +3,9 @@
 
 // parameters for application initialization
 #define WINDOW_TITLE   "Tetris game - [Bài tập lớn Lập trình nâng cao]"
-#define WINDOW_WIDTH   800  // width of the main window
-#define WINDOW_HEIGHT  600  // height of the main window
+#define WINDOW_WIDTH         800        // width of the main window
+#define WINDOW_HEIGHT        600        // height of the main window
+#define WINDOW_ASPECT_RATIO  1.3333333  // aspect ratio (= width/height)
 
 // parameters for displaying background
 #define BACKGROUND_POS_X  0  // top-left X-coordinate of the main background

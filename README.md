@@ -7,10 +7,8 @@ This is Vietnamese version. [README in English](/README_en.md)
 - **Lớp khoá học:** QH-2024-I/CQ-I-CS4
 - **Mã sinh viên:** 24021400
 
-## Ngôn ngữ lập trình và phiên bản
-C++17 trở lên
-
-## Thư viện đồ hoạ
+## Ngôn ngữ lập trình, thư viện đồ hoạ và phiên bản
+  - C++17 trở lên
   - [SDL 3.2.8](https://github.com/libsdl-org/SDL/releases/tag/release-3.2.8)
   - [SDL_image 3.2.4](https://github.com/libsdl-org/SDL_image/releases/tag/release-3.2.4)
   - [SDL_ttf 3.2.0](https://github.com/libsdl-org/SDL_ttf/releases/tag/release-3.2.0)
@@ -85,11 +83,10 @@ Sau mỗi level, tốc độ rơi của các Tetromino sẽ nhanh hơn (dữ li�
 
 # Cấu hình biên dịch
 ```
-g++ -std=c++17 main.cpp ./src/*.cpp -o Tetris.exe -mwindows -Isrc/include -Lsrc/lib -lSDL3 -lSDL3_image -lSDL3_ttf
+g++ main.cpp ./src/*.cpp -oTetris.exe -Isrc/include -Lsrc/lib -lSDL3 -lSDL3_image -lSDL3_ttf -mwindows
 ```
 
 # Một số hình ảnh của game
-
 <details><summary>Khi vừa mở game</summary>
   
   ![image](https://github.com/user-attachments/assets/8e010ca0-8a9f-4985-aa24-8e55be7b4c7d)
@@ -124,7 +121,6 @@ g++ -std=c++17 main.cpp ./src/*.cpp -o Tetris.exe -mwindows -Isrc/include -Lsrc/
   
   ![image](https://github.com/user-attachments/assets/0f0bc50b-68cf-45dd-a785-f7a40c67b9ff)
 </details>
-
 
 # Nguồn tham khảo
 - Code mẫu tại [trang chủ của SDL](https://examples.libsdl.org/SDL3/)
